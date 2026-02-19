@@ -510,7 +510,7 @@
         <div class="ticker-header">
             <div class="ticker-title">
                 <span class="live-dot"></span>
-                Live seit Arbeitsbeginn
+                Live
             </div>
         </div>
         <div class="ticker-value" id="liveVerdienst">€0,00</div>
@@ -646,7 +646,6 @@
     <script>
         // State
         let isMonthly = true;
-        let startTime = Date.now();
         
         // Steuerklassen Faktoren (vereinfacht)
         const steuerklassen = {
@@ -721,22 +720,16 @@
             return '€' + value.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
         }
         
-        // Live Ticker
+        // Live Ticker - zeigt aktuellen Stundensatz
         function updateLiveTicker() {
             const nettoStunde = parseFloat(document.getElementById('nettoDisplay').textContent.replace(/[€.]/g, '').replace(',', '.')) || 0;
             const abgabenStunde = parseFloat(document.getElementById('abgabenDisplay').textContent.replace(/[€.]/g, '').replace(',', '.')) || 0;
             
-            const elapsedHours = (Date.now() - startTime) / 1000 / 60 / 60;
-            
-            const liveNetto = nettoStunde * elapsedHours;
-            const liveAbgaben = abgabenStunde * elapsedHours;
-            const liveSteuern = liveAbgaben * 0.5;
-            const liveSozial = liveAbgaben * 0.5;
-            
-            document.getElementById('liveVerdienst').textContent = formatCurrency(liveNetto + liveAbgaben);
-            document.getElementById('liveNetto').textContent = formatCurrency(liveNetto);
-            document.getElementById('liveSteuern').textContent = '-' + formatCurrency(liveSteuern);
-            document.getElementById('liveSozial').textContent = '-' + formatCurrency(liveSozial);
+            // Zeigt einfach den aktuellen Stundensatz an (nicht akkumuliert)
+            document.getElementById('liveVerdienst').textContent = formatCurrency(nettoStunde + abgabenStunde);
+            document.getElementById('liveNetto').textContent = formatCurrency(nettoStunde);
+            document.getElementById('liveSteuern').textContent = '-' + formatCurrency(abgabenStunde * 0.5);
+            document.getElementById('liveSozial').textContent = '-' + formatCurrency(abgabenStunde * 0.5);
         }
         
         // Initial berechnen
