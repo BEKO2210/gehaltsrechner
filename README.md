@@ -8,8 +8,6 @@
 
 Eine moderne, mobile-first Progressive Web App (PWA) zur Berechnung deines Brutto- und Netto-Gehalts in Echtzeit. Sieh auf einen Blick, wie viel du verdienst – und wie viel davon an den Staat geht.
 
-![Gehaltsrechner Screenshot](screenshot.png)
-
 ---
 
 ## ✨ Features
