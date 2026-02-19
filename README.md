@@ -217,8 +217,6 @@ Dieses Projekt ist unter der MIT-Lizenz lizenziert – siehe [LICENSE](LICENSE) 
 
 **Belkis Aslani**
 - GitHub: [@BEKO2210](https://github.com/BEKO2210)
-- LinkedIn: [Belkis Aslani](https://linkedin.com/in/belkis-aslani)
-- Website: [HomeOfficeDeutschland.de](https://homeofficedeutschland.de)
 
 ---
 
