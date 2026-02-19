@@ -144,6 +144,7 @@ gehaltsrechner/
 --text-secondary: rgba(240, 240, 245, 0.65); /* Sekundärtext */
 --text-tertiary: rgba(240, 240, 245, 0.4);   /* Tertiärtext */
 --text-muted: rgba(240, 240, 245, 0.25);     /* Gedämpfter Text */
+```
 
 Typografie
 UI-Font: Inter (Google Fonts) — 300–900 weight
