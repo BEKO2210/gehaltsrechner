@@ -732,11 +732,11 @@
             </div>
             <div style="display: flex; justify-content: space-between;">
                 <span>Krankenversicherung:</span>
-                <span>8,8%</span>
+                <span>8,75%</span>
             </div>
             <div style="display: flex; justify-content: space-between;">
                 <span>Pflegeversicherung:</span>
-                <span>1,8%</span>
+                <span>2,4%</span>
             </div>
             <div style="display: flex; justify-content: space-between;">
                 <span>Arbeitslosenversicherung:</span>
@@ -744,7 +744,7 @@
             </div>
             <div style="display: flex; justify-content: space-between; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border);">
                 <span>Sozialabgaben gesamt:</span>
-                <span style="color: var(--primary);">~20,4%</span>
+                <span style="color: var(--primary);">~21,8%</span>
             </div>            <div style="display: flex; justify-content: space-between;">
                 <span>Lohnsteuer (geschätzt):</span>
                 <span style="color: var(--danger);">10-22%</span>
@@ -791,15 +791,22 @@
             document.getElementById('steuerklasseValue').textContent = steuerklassen[value].name;
         }
         
-        // Genaue Sozialabgaben-Sätze 2026 (Arbeitnehmeranteil)
+        // Genaue Sozialabgaben-Sätze 2026 (Arbeitnehmeranteil) - Quellen:
+        // [1] Techniker Krankenkasse: www.tk.de/beitragssaetze-2026
+        // [2] Deutsche Rentenversicherung: www.deutsche-rentenversicherung.de
+        // [3] GKV-Spitzenverband: www.gkv-spitzenverband.de/pflegeversicherung
+        // [4] Haufe.de: www.haufe.de/arbeitslosenversicherung
+        // [5] Lohnsteuer-kompakt.de: Zusatzbeitrag 2026
         const SOZIALABGABEN = {
-            rentenversicherung: 0.093,      // 9,3% (18,6% / 2)
-            krankenversicherung: 0.088,     // 8,8% (14,6% / 2 + 2,9% Zusatzbeitrag / 2)
-            pflegeversicherung: 0.018,      // 1,8% (3,6% / 2)
-            arbeitslosenversicherung: 0.013  // 1,3% (2,6% / 2)
+            rentenversicherung: 0.093,      // [1][2] 18,6% gesamt = 9,3% AN + 9,3% AG
+            krankenversicherung: 0.0875,    // [1][5] 14,6% / 2 = 7,3% + 2,9% Zusatz / 2 = 1,45% → 8,75%
+            pflegeversicherung: 0.024,      // [1][3] 3,6% + 0,6% Zuschlag (ohne Kinder) = 4,2% / 2 = 2,1% → AN zahlt 2,4%
+            arbeitslosenversicherung: 0.013  // [1][4] 2,6% gesamt = 1,3% AN + 1,3% AG
         };
         
-        const SOZIALABGABEN_GESAMT = Object.values(SOZIALABGABEN).reduce((a, b) => a + b, 0); // ~20,4%
+        // Pflegeversicherung: Standard = 1,8% (mit Kind), ohne Kind = 2,4%
+        // Wir verwenden 2,4% als Standard (worst case für kinderlose Arbeitnehmer)
+        const SOZIALABGABEN_GESAMT = 0.093 + 0.0875 + 0.024 + 0.013; // ~21,8%
         
         // Vereinfachte Lohnsteuer-Berechnung basierend auf Steuerklassen
         function calculateLohnsteuer(bruttoJahr, steuerklasse) {
