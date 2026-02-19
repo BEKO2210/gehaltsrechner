@@ -1,4 +1,7 @@
-# 💰 Gehaltsrechner
+![App Icon](https://raw.githubusercontent.com/BEKO2210/gehaltsrechner/main/icons/icon.png)
+
+
+# Gehaltsrechner
 
 **Live-Verdienst-Tracker für Deutschland**
 
