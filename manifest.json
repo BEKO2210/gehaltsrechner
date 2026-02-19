@@ -1,7 +1,7 @@
 {
-  "name": "SALARY PRO - Brutto-Netto-Rechner 2025",
+  "name": "SALARY PRO - Brutto-Netto-Rechner 2026",
   "short_name": "Salary Pro",
-  "description": "Pr\u00e4ziser Brutto-Netto-Rechner mit echten deutschen Steuerformeln (\u00a732a EStG 2025). Live-Verdienst-Tracker.",
+  "description": "Pr\u00e4ziser Brutto-Netto-Rechner mit echten deutschen Steuerformeln (\u00a732a EStG 2026). Live-Verdienst-Tracker.",
   "start_url": "/gehaltsrechner/",
   "scope": "/gehaltsrechner/",
   "display": "standalone",
