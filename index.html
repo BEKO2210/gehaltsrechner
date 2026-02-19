@@ -718,6 +718,40 @@
         </div>
         <div class="progress-bar">
             <div class="progress-fill" id="sozialBar" style="width: 0%"></div>
+        </div>    </div>
+    
+    <!-- Abgaben-Details -->
+    <div class="progress-section">
+        <div class="progress-header">
+            <span style="font-size: 14px; font-weight: 600;">📊 Abgaben-Sätze 2026</span>
+        </div>
+        <div style="font-size: 12px; color: var(--text-muted); line-height: 1.8;">
+            <div style="display: flex; justify-content: space-between;">
+                <span>Rentenversicherung:</span>
+                <span>9,3%</span>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+                <span>Krankenversicherung:</span>
+                <span>8,8%</span>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+                <span>Pflegeversicherung:</span>
+                <span>1,8%</span>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+                <span>Arbeitslosenversicherung:</span>
+                <span>1,3%</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border);">
+                <span>Sozialabgaben gesamt:</span>
+                <span style="color: var(--primary);">~20,4%</span>
+            </div>            <div style="display: flex; justify-content: space-between;">
+                <span>Lohnsteuer (geschätzt):</span>
+                <span style="color: var(--danger);">10-22%</span>
+            </div>
+            <div style="margin-top: 12px; font-size: 11px; opacity: 0.7;">
+                * Grundfreibetrag 2026: €12.348 | Durchschnittlicher Zusatzbeitrag: 2,9%
+            </div>
         </div>
     </div>
     
@@ -757,30 +791,77 @@
             document.getElementById('steuerklasseValue').textContent = steuerklassen[value].name;
         }
         
+        // Genaue Sozialabgaben-Sätze 2026 (Arbeitnehmeranteil)
+        const SOZIALABGABEN = {
+            rentenversicherung: 0.093,      // 9,3% (18,6% / 2)
+            krankenversicherung: 0.088,     // 8,8% (14,6% / 2 + 2,9% Zusatzbeitrag / 2)
+            pflegeversicherung: 0.018,      // 1,8% (3,6% / 2)
+            arbeitslosenversicherung: 0.013  // 1,3% (2,6% / 2)
+        };
+        
+        const SOZIALABGABEN_GESAMT = Object.values(SOZIALABGABEN).reduce((a, b) => a + b, 0); // ~20,4%
+        
+        // Vereinfachte Lohnsteuer-Berechnung basierend auf Steuerklassen
+        function calculateLohnsteuer(bruttoJahr, steuerklasse) {
+            const grundfreibetrag = 12348; // 2026
+            const steuerpflichtigesEinkommen = Math.max(0, bruttoJahr - grundfreibetrag);
+            
+            // Vereinfachte Steuersätze nach Steuerklasse (Durchschnittssteuersatz)
+            const steuerSaetze = {
+                1: 0.14,  // Klasse I: ~14% Durchschnitt
+                2: 0.12,  // Klasse II: ~12% (alleinerziehend)
+                3: 0.10,  // Klasse III: ~10% (niedriger für Hauptverdiener)
+                4: 0.14,  // Klasse IV: ~14% (gleich wie I)
+                5: 0.18,  // Klasse V: ~18% (höher für Zweitverdiener)
+                6: 0.22   // Klasse VI: ~22% (Zweitjob)
+            };
+            
+            return steuerpflichtigesEinkommen * steuerSaetze[steuerklasse];
+        }
+        
         function calculate() {
             const bruttoInput = parseFloat(document.getElementById('bruttoInput').value) || 0;
             const stundenProWoche = parseFloat(document.getElementById('stundenInput').value) || 40;
             const steuerklasse = parseInt(document.getElementById('steuerklasseInput').value);
             
-            // Umrechnung auf Monatswert
-            const bruttoMonat = isMonthly ? bruttoInput : bruttoInput / 12;
+            // Umrechnung auf Jahreswert
+            const bruttoJahr = isMonthly ? bruttoInput * 12 : bruttoInput;
+            const bruttoMonat = bruttoJahr / 12;
             
-            // Stunden pro Monat (ca. 4.33 Wochen)
-            const stundenProMonat = stundenProWoche * 4.33;
-            const stundenProJahr = stundenProWoche * 52;
+            // Stunden pro Jahr
+            const wochenProJahr = 52;
+            const stundenProJahr = stundenProWoche * wochenProJahr;
             
-            // Vereinfachte Abgabenberechnung (ca. 40% inkl. Steuern + Sozialabgaben)
-            // Mit Steuerklassen-Anpassung
-            const abgabenSatz = 0.40 * steuerklassen[steuerklasse].faktor;
-            const nettoSatz = 1 - abgabenSatz;
+            // Sozialabgaben berechnen (Jahr)
+            const sozialabgabenJahr = bruttoJahr * SOZIALABGABEN_GESAMT;
             
-            const nettoMonat = bruttoMonat * nettoSatz;
-            const abgabenMonat = bruttoMonat - nettoMonat;
+            // Lohnsteuer berechnen (Jahr)
+            const lohnsteuerJahr = calculateLohnsteuer(bruttoJahr, steuerklasse);
+            
+            // Gesamtabgaben
+            const abgabenJahr = sozialabgabenJahr + lohnsteuerJahr;
+            const nettoJahr = bruttoJahr - abgabenJahr;
+            
+            // Umrechnung auf Monat
+            const nettoMonat = nettoJahr / 12;
+            const abgabenMonat = abgabenJahr / 12;
+            const lohnsteuerMonat = lohnsteuerJahr / 12;
+            const sozialabgabenMonat = sozialabgabenJahr / 12;
             
             // Stundensätze
-            const bruttoStunde = bruttoMonat / stundenProMonat;
-            const nettoStunde = nettoMonat / stundenProMonat;
-            const abgabenStunde = abgabenMonat / stundenProMonat;
+            const bruttoStunde = bruttoJahr / stundenProJahr;
+            const nettoStunde = nettoJahr / stundenProJahr;
+            const abgabenStunde = abgabenJahr / stundenProJahr;
+            const lohnsteuerStunde = lohnsteuerJahr / stundenProJahr;
+            const sozialStunde = sozialabgabenJahr / stundenProJahr;
+            
+            // Speichern für Live-Ticker
+            window.currentRates = {
+                nettoStunde,
+                abgabenStunde,
+                lohnsteuerStunde,
+                sozialStunde
+            };
             
             // Werte aktualisieren
             document.getElementById('bruttoDisplay').textContent = formatCurrency(bruttoStunde);
@@ -791,17 +872,17 @@
             document.getElementById('tagDisplay').textContent = formatCurrency(nettoStunde * 8);
             document.getElementById('wocheDisplay').textContent = formatCurrency(nettoStunde * stundenProWoche);
             document.getElementById('monatDisplay').textContent = formatCurrency(nettoMonat);
-            document.getElementById('jahrDisplay').textContent = formatCurrency(nettoMonat * 12);
+            document.getElementById('jahrDisplay').textContent = formatCurrency(nettoJahr);
             
             // Progress Bars
-            const steuerAnteil = (abgabenMonat / bruttoMonat * 50).toFixed(1); // ca. Hälfte sind Steuern
-            const sozialAnteil = (abgabenMonat / bruttoMonat * 50).toFixed(1);
+            const steuerAnteil = ((lohnsteuerJahr / bruttoJahr) * 100).toFixed(1);
+            const sozialAnteil = ((sozialabgabenJahr / bruttoJahr) * 100).toFixed(1);
             
             document.getElementById('steuerProzent').textContent = steuerAnteil + '%';
-            document.getElementById('steuerBar').style.width = steuerAnteil + '%';
+            document.getElementById('steuerBar').style.width = Math.min(steuerAnteil, 100) + '%';
             
             document.getElementById('sozialProzent').textContent = sozialAnteil + '%';
-            document.getElementById('sozialBar').style.width = sozialAnteil + '%';
+            document.getElementById('sozialBar').style.width = Math.min(sozialAnteil, 100) + '%';
         }
         
         function formatCurrency(value) {
@@ -810,20 +891,19 @@
         
         // Live Ticker - zeigt akkumulierte Zeit seit Start
         function updateLiveTicker() {
-            if (!isRunning) return;
+            if (!isRunning || !window.currentRates) return;
             
-            const nettoStunde = parseFloat(document.getElementById('nettoDisplay').textContent.replace(/[€.]/g, '').replace(',', '.')) || 0;
-            const abgabenStunde = parseFloat(document.getElementById('abgabenDisplay').textContent.replace(/[€.]/g, '').replace(',', '.')) || 0;
+            const { nettoStunde, lohnsteuerStunde, sozialStunde } = window.currentRates;
             
             const currentSession = (Date.now() - startTime) / 1000 / 60 / 60; // Stunden
             const totalHours = accumulatedTime + currentSession;
             
             const liveNetto = nettoStunde * totalHours;
-            const liveAbgaben = abgabenStunde * totalHours;
-            const liveSteuern = liveAbgaben * 0.5;
-            const liveSozial = liveAbgaben * 0.5;
+            const liveSteuern = lohnsteuerStunde * totalHours;
+            const liveSozial = sozialStunde * totalHours;
+            const liveBrutto = liveNetto + liveSteuern + liveSozial;
             
-            document.getElementById('liveVerdienst').textContent = formatCurrency(liveNetto + liveAbgaben);
+            document.getElementById('liveVerdienst').textContent = formatCurrency(liveBrutto);
             document.getElementById('liveNetto').textContent = formatCurrency(liveNetto);
             document.getElementById('liveSteuern').textContent = '-' + formatCurrency(liveSteuern);
             document.getElementById('liveSozial').textContent = '-' + formatCurrency(liveSozial);
