@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Gehaltsrechner | Live Verdienst-Tracker</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #667eea;
+            --primary-dark: #5a67d8;
+            --secondary: #f093fb;
+            --success: #48bb78;
+            --danger: #f56565;
+            --warning: #ed8936;
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 100px;
+            overflow-x: hidden;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 24px 20px 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            animation: pulse 4s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            position: relative;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+            position: relative;
+        }
+        
+        /* Main Display Cards */
+        .display-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding: 0 16px;
+            margin-top: -20px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .display-card {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 20px 16px;
+            text-align: center;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .display-card:active {
+            transform: scale(0.98);
+        }
+        
+        .display-card.main {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, var(--success) 0%, #38a169 100%);
+            border: none;
+        }
+        
+        .display-card.danger {
+            background: linear-gradient(135deg, var(--danger) 0%, #c53030 100%);
+            border: none;
+        }
+        
+        .display-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+            margin-bottom: 8px;
+        }
+        
+        .display-value {
+            font-size: 32px;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
+        
+        .display-card.main .display-value {
+            font-size: 48px;
+        }
+        
+        .display-unit {
+            font-size: 14px;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+        
+        /* Live Ticker */
+        .live-ticker {
+            background: var(--card);
+            margin: 20px 16px;
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid var(--border);
+        }
+        
+        .ticker-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .ticker-title {
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        .ticker-value {
+            font-size: 36px;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            color: var(--success);
+            text-align: center;
+            font-family: 'SF Mono', Monaco, monospace;
+        }
+        
+        .ticker-breakdown {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+        
+        .breakdown-item {
+            text-align: center;
+        }
+        
+        .breakdown-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+        
+        .breakdown-value {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .breakdown-value.negative {
+            color: var(--danger);
+        }
+        
+        /* Input Section */
+        .input-section {
+            background: var(--card);
+            margin: 0 16px 20px;
+            border-radius: 20px;
+            padding: 24px 20px;
+            border: 1px solid var(--border);
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .input-field {
+            width: 100%;
+            background: var(--bg);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            padding: 16px 20px;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text);
+            transition: all 0.2s;
+            font-variant-numeric: tabular-nums;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+        
+        .input-suffix {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        
+        /* Toggle Switch */
+        .toggle-group {
+            display: flex;
+            background: var(--bg);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 20px;
+        }
+        
+        .toggle-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .toggle-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        /* Slider */
+        .slider-container {
+            margin-bottom: 20px;
+        }
+        
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        
+        .slider-value {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            background: var(--bg);
+            border-radius: 4px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 0 16px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 16px;
+            border: 1px solid var(--border);
+        }
+        
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
+        
+        .stat-value.small {
+            font-size: 16px;
+        }
+        
+        /* Progress Bar */
+        .progress-section {
+            background: var(--card);
+            margin: 0 16px 20px;
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid var(--border);
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        
+        .progress-bar {
+            height: 12px;
+            background: var(--bg);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 6px;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-fill.danger {
+            background: linear-gradient(90deg, var(--danger), var(--warning));
+        }
+        
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+            z-index: 100;
+        }
+        
+        .fab:active {
+            transform: scale(0.95);
+        }
+        
+        /* Install Banner */
+        .install-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card);
+            padding: 16px 20px;
+            border-top: 1px solid var(--border);
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 99;
+        }
+        
+        .install-banner.show {
+            display: flex;
+        }
+        
+        .install-text {
+            font-size: 14px;
+        }
+        
+        .install-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        /* Animations */
+        @keyframes countUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-in {
+            animation: countUp 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <h1>💰 Gehaltsrechner</h1>
+        <p>Live-Verdienst-Tracker</p>
+    </header>
+    
+    <!-- Main Display -->
+    <div class="display-grid">
+        <div class="display-card main">
+            <div class="display-label">Dein Netto-Verdienst</div>
+            <div class="display-value" id="nettoDisplay">€0,00</div>
+            <div class="display-unit">pro Stunde</div>
+        </div>
+        
+        <div class="display-card">
+            <div class="display-label">Brutto</div>
+            <div class="display-value" id="bruttoDisplay">€0,00</div>
+            <div class="display-unit">/Stunde</div>
+        </div>
+        
+        <div class="display-card danger">
+            <div class="display-label">Abgaben</div>
+            <div class="display-value" id="abgabenDisplay">€0,00</div>
+            <div class="display-unit">/Std an Staat</div>
+        </div>
+    </div>
+    
+    <!-- Live Ticker -->
+    <div class="live-ticker">
+        <div class="ticker-header">
+            <div class="ticker-title">
+                <span class="live-dot"></span>
+                Live seit Arbeitsbeginn
+            </div>
+        </div>
+        <div class="ticker-value" id="liveVerdienst">€0,00</div>
+        
+        <div class="ticker-breakdown">
+            <div class="breakdown-item">
+                <div class="breakdown-label">Netto</div>
+                <div class="breakdown-value" id="liveNetto">€0,00</div>
+            </div>
+            <div class="breakdown-item">
+                <div class="breakdown-label">Steuern</div>
+                <div class="breakdown-value negative" id="liveSteuern">-€0,00</div>
+            </div>
+            <div class="breakdown-item">
+                <div class="breakdown-label">Sozialabgaben</div>
+                <div class="breakdown-value negative" id="liveSozial">-€0,00</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Input Section -->
+    <div class="input-section">
+        <h2 class="section-title">⚙️ Einstellungen</h2>
+        
+        <!-- Toggle Monat/Jahr -->
+        <div class="toggle-group">
+            <button class="toggle-btn active" onclick="setPeriod('month')" id="btnMonth">Monat</button>
+            <button class="toggle-btn" onclick="setPeriod('year')" id="btnYear">Jahr</button>
+        </div>
+        
+        <!-- Brutto Input -->
+        <div class="input-group">
+            <label class="input-label">Brutto Gehalt</label>
+            <div class="input-wrapper">
+                <input 
+                    type="number" 
+                    class="input-field" 
+                    id="bruttoInput"
+                    placeholder="5000"
+                    value="5000"
+                    oninput="calculate()"
+                >
+                <span class="input-suffix">€</span>
+            </div>
+        </div>
+        
+        <!-- Stunden Input -->
+        <div class="input-group">
+            <label class="input-label">Arbeitsstunden pro Woche</label>
+            <div class="input-wrapper">
+                <input 
+                    type="number" 
+                    class="input-field" 
+                    id="stundenInput"
+                    placeholder="40"
+                    value="40"
+                    oninput="calculate()"
+                >
+                <span class="input-suffix">Std</span>
+            </div>
+        </div>
+        
+        <!-- Steuerklasse -->
+        <div class="input-group">
+            <label class="input-label">Steuerklasse</label>
+            <div class="slider-container">
+                <div class="slider-label">
+                    <span>Klasse</span>
+                    <span class="slider-value" id="steuerklasseValue">I</span>
+                </div>
+                <input 
+                    type="range" 
+                    min="1" 
+                    max="6" 
+                    value="1" 
+                    id="steuerklasseInput"
+                    oninput="updateSteuerklasse(); calculate()"
+                >
+            </div>
+        </div>
+    </div>
+    
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-label">Pro Tag (8h)</div>
+            <div class="stat-value" id="tagDisplay">€0</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-label">Pro Woche</div>
+            <div class="stat-value" id="wocheDisplay">€0</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-label">Pro Monat</div>
+            <div class="stat-value" id="monatDisplay">€0</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-label">Pro Jahr</div>
+            <div class="stat-value small" id="jahrDisplay">€0</div>
+        </div>
+    </div>
+    
+    <!-- Progress Bars -->
+    <div class="progress-section">
+        <div class="progress-header">
+            <span>Lohnsteuer</span>
+            <span id="steuerProzent">0%</span>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill danger" id="steuerBar" style="width: 0%"></div>
+        </div>
+    </div>
+    
+    <div class="progress-section">
+        <div class="progress-header">
+            <span>Sozialabgaben (Renten-, Kranken-, Pflegeversicherung)</span>
+            <span id="sozialProzent">0%</span>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="sozialBar" style="width: 0%"></div>
+        </div>
+    </div>
+    
+    <!-- Install Banner -->
+    <div class="install-banner" id="installBanner">
+        <div class="install-text">📱 App installieren</div>
+        <button class="install-btn" onclick="installApp()">Installieren</button>
+    </div>
+    
+    <script>
+        // State
+        let isMonthly = true;
+        let startTime = Date.now();
+        
+        // Steuerklassen Faktoren (vereinfacht)
+        const steuerklassen = {
+            1: { faktor: 1.0, name: 'I' },
+            2: { faktor: 0.9, name: 'II' },
+            3: { faktor: 0.8, name: 'III' },
+            4: { faktor: 1.0, name: 'IV' },
+            5: { faktor: 1.2, name: 'V' },
+            6: { faktor: 1.4, name: 'VI' }
+        };
+        
+        function setPeriod(period) {
+            isMonthly = period === 'month';
+            document.getElementById('btnMonth').classList.toggle('active', isMonthly);
+            document.getElementById('btnYear').classList.toggle('active', !isMonthly);
+            calculate();
+        }
+        
+        function updateSteuerklasse() {
+            const value = document.getElementById('steuerklasseInput').value;
+            document.getElementById('steuerklasseValue').textContent = steuerklassen[value].name;
+        }
+        
+        function calculate() {
+            const bruttoInput = parseFloat(document.getElementById('bruttoInput').value) || 0;
+            const stundenProWoche = parseFloat(document.getElementById('stundenInput').value) || 40;
+            const steuerklasse = parseInt(document.getElementById('steuerklasseInput').value);
+            
+            // Umrechnung auf Monatswert
+            const bruttoMonat = isMonthly ? bruttoInput : bruttoInput / 12;
+            
+            // Stunden pro Monat (ca. 4.33 Wochen)
+            const stundenProMonat = stundenProWoche * 4.33;
+            const stundenProJahr = stundenProWoche * 52;
+            
+            // Vereinfachte Abgabenberechnung (ca. 40% inkl. Steuern + Sozialabgaben)
+            // Mit Steuerklassen-Anpassung
+            const abgabenSatz = 0.40 * steuerklassen[steuerklasse].faktor;
+            const nettoSatz = 1 - abgabenSatz;
+            
+            const nettoMonat = bruttoMonat * nettoSatz;
+            const abgabenMonat = bruttoMonat - nettoMonat;
+            
+            // Stundensätze
+            const bruttoStunde = bruttoMonat / stundenProMonat;
+            const nettoStunde = nettoMonat / stundenProMonat;
+            const abgabenStunde = abgabenMonat / stundenProMonat;
+            
+            // Werte aktualisieren
+            document.getElementById('bruttoDisplay').textContent = formatCurrency(bruttoStunde);
+            document.getElementById('nettoDisplay').textContent = formatCurrency(nettoStunde);
+            document.getElementById('abgabenDisplay').textContent = formatCurrency(abgabenStunde);
+            
+            // Stats
+            document.getElementById('tagDisplay').textContent = formatCurrency(nettoStunde * 8);
+            document.getElementById('wocheDisplay').textContent = formatCurrency(nettoStunde * stundenProWoche);
+            document.getElementById('monatDisplay').textContent = formatCurrency(nettoMonat);
+            document.getElementById('jahrDisplay').textContent = formatCurrency(nettoMonat * 12);
+            
+            // Progress Bars
+            const steuerAnteil = (abgabenMonat / bruttoMonat * 50).toFixed(1); // ca. Hälfte sind Steuern
+            const sozialAnteil = (abgabenMonat / bruttoMonat * 50).toFixed(1);
+            
+            document.getElementById('steuerProzent').textContent = steuerAnteil + '%';
+            document.getElementById('steuerBar').style.width = steuerAnteil + '%';
+            
+            document.getElementById('sozialProzent').textContent = sozialAnteil + '%';
+            document.getElementById('sozialBar').style.width = sozialAnteil + '%';
+        }
+        
+        function formatCurrency(value) {
+            return '€' + value.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+        
+        // Live Ticker
+        function updateLiveTicker() {
+            const nettoStunde = parseFloat(document.getElementById('nettoDisplay').textContent.replace(/[€.]/g, '').replace(',', '.')) || 0;
+            const abgabenStunde = parseFloat(document.getElementById('abgabenDisplay').textContent.replace(/[€.]/g, '').replace(',', '.')) || 0;
+            
+            const elapsedHours = (Date.now() - startTime) / 1000 / 60 / 60;
+            
+            const liveNetto = nettoStunde * elapsedHours;
+            const liveAbgaben = abgabenStunde * elapsedHours;
+            const liveSteuern = liveAbgaben * 0.5;
+            const liveSozial = liveAbgaben * 0.5;
+            
+            document.getElementById('liveVerdienst').textContent = formatCurrency(liveNetto + liveAbgaben);
+            document.getElementById('liveNetto').textContent = formatCurrency(liveNetto);
+            document.getElementById('liveSteuern').textContent = '-' + formatCurrency(liveSteuern);
+            document.getElementById('liveSozial').textContent = '-' + formatCurrency(liveSozial);
+        }
+        
+        // Initial berechnen
+        calculate();
+        
+        // Live Ticker alle 100ms aktualisieren
+        setInterval(updateLiveTicker, 100);
+        
+        // PWA Install
+        let deferredPrompt;
+        
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installBanner').classList.add('show');
+        });
+        
+        function installApp() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        document.getElementById('installBanner').classList.remove('show');
+                    }
+                });
+            }
+        }
+        
+        // Service Worker registrieren
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(console.error);
+        }
+    </script>
+</body>
+</html>
