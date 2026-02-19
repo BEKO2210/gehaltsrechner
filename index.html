@@ -433,7 +433,78 @@
             transform: scale(0.95);
         }
         
-        /* Install Banner */
+        /* Uiverse.io Buttons */
+        .btn-container {
+            display: flex;
+            gap: 12px;
+            margin: 20px 16px;
+        }
+        
+        .uiverse-btn {
+            position: relative;
+            padding: 16px 32px;
+            border-radius: 16px;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .uiverse-btn:active {
+            transform: scale(0.95);
+        }
+        
+        /* Start Button - Gradient */
+        .btn-start {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-start:hover {
+            box-shadow: 0 12px 40px rgba(102, 126, 234, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .btn-start::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn-start:hover::before {
+            left: 100%;
+        }
+        
+        /* Reset Button - Outline */
+        .btn-reset {
+            background: transparent;
+            color: #f56565;
+            border: 2px solid #f56565;
+        }
+        
+        .btn-reset:hover {
+            background: #f56565;
+            color: white;
+            box-shadow: 0 8px 32px rgba(245, 101, 101, 0.3);
+        }
+        
+        /* Button Icons */
+        .btn-icon {
+            font-size: 18px;
+        }
         .install-banner {
             position: fixed;
             bottom: 0;
@@ -637,6 +708,19 @@
         </div>
     </div>
     
+    <!-- Buttons -->
+    <div class="btn-container">
+        <button class="uiverse-btn btn-start" onclick="startCalculation()">
+            <span class="btn-icon">▶️</span>
+            <span>Start</span>
+        </button>
+        
+        <button class="uiverse-btn btn-reset" onclick="resetCalculation()">
+            <span class="btn-icon">🔄</span>
+            <span>Reset</span>
+        </button>
+    </div>
+    
     <!-- Install Banner -->
     <div class="install-banner" id="installBanner">
         <div class="install-text">📱 App installieren</div>
@@ -646,6 +730,10 @@
     <script>
         // State
         let isMonthly = true;
+        let isRunning = false;
+        let startTime = null;
+        let accumulatedTime = 0;
+        let timerInterval = null;
         
         // Steuerklassen Faktoren (vereinfacht)
         const steuerklassen = {
@@ -720,16 +808,61 @@
             return '€' + value.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
         }
         
-        // Live Ticker - zeigt aktuellen Stundensatz
+        // Live Ticker - zeigt akkumulierte Zeit seit Start
         function updateLiveTicker() {
+            if (!isRunning) return;
+            
             const nettoStunde = parseFloat(document.getElementById('nettoDisplay').textContent.replace(/[€.]/g, '').replace(',', '.')) || 0;
             const abgabenStunde = parseFloat(document.getElementById('abgabenDisplay').textContent.replace(/[€.]/g, '').replace(',', '.')) || 0;
             
-            // Zeigt einfach den aktuellen Stundensatz an (nicht akkumuliert)
-            document.getElementById('liveVerdienst').textContent = formatCurrency(nettoStunde + abgabenStunde);
-            document.getElementById('liveNetto').textContent = formatCurrency(nettoStunde);
-            document.getElementById('liveSteuern').textContent = '-' + formatCurrency(abgabenStunde * 0.5);
-            document.getElementById('liveSozial').textContent = '-' + formatCurrency(abgabenStunde * 0.5);
+            const currentSession = (Date.now() - startTime) / 1000 / 60 / 60; // Stunden
+            const totalHours = accumulatedTime + currentSession;
+            
+            const liveNetto = nettoStunde * totalHours;
+            const liveAbgaben = abgabenStunde * totalHours;
+            const liveSteuern = liveAbgaben * 0.5;
+            const liveSozial = liveAbgaben * 0.5;
+            
+            document.getElementById('liveVerdienst').textContent = formatCurrency(liveNetto + liveAbgaben);
+            document.getElementById('liveNetto').textContent = formatCurrency(liveNetto);
+            document.getElementById('liveSteuern').textContent = '-' + formatCurrency(liveSteuern);
+            document.getElementById('liveSozial').textContent = '-' + formatCurrency(liveSozial);
+        }
+        
+        // Start Button
+        function startCalculation() {
+            if (isRunning) {
+                // Pause
+                isRunning = false;
+                accumulatedTime += (Date.now() - startTime) / 1000 / 60 / 60;
+                document.querySelector('.btn-start span:last-child').textContent = 'Start';
+                document.querySelector('.btn-start .btn-icon').textContent = '▶️';
+                clearInterval(timerInterval);
+            } else {
+                // Start
+                isRunning = true;
+                startTime = Date.now();
+                document.querySelector('.btn-start span:last-child').textContent = 'Pause';
+                document.querySelector('.btn-start .btn-icon').textContent = '⏸️';
+                timerInterval = setInterval(updateLiveTicker, 100);
+            }
+        }
+        
+        // Reset Button
+        function resetCalculation() {
+            isRunning = false;
+            accumulatedTime = 0;
+            startTime = null;
+            clearInterval(timerInterval);
+            
+            document.querySelector('.btn-start span:last-child').textContent = 'Start';
+            document.querySelector('.btn-start .btn-icon').textContent = '▶️';
+            
+            // Reset displays
+            document.getElementById('liveVerdienst').textContent = '€0,00';
+            document.getElementById('liveNetto').textContent = '€0,00';
+            document.getElementById('liveSteuern').textContent = '-€0,00';
+            document.getElementById('liveSozial').textContent = '-€0,00';
         }
         
         // Initial berechnen
