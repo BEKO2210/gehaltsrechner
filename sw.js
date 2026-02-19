@@ -1,25 +1,52 @@
-const CACHE_NAME = 'gehaltsrechner-v1';
-const urlsToCache = [
+const CACHE_NAME = 'gehaltsrechner-v2';
+const ASSETS = [
   '/',
   '/index.html',
-  '/manifest.json'
+  '/manifest.json',
+  '/icons/icon.svg'
 ];
 
+// Install: cache all assets
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(urlsToCache))
+      .then((cache) => cache.addAll(ASSETS))
+      .then(() => self.skipWaiting())
   );
 });
 
+// Activate: clean old caches
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(
+        keys.filter((key) => key !== CACHE_NAME)
+            .map((key) => caches.delete(key))
+      )
+    ).then(() => self.clients.claim())
+  );
+});
+
+// Fetch: network-first with cache fallback
 self.addEventListener('fetch', (event) => {
+  // Only handle GET requests for same-origin
+  if (event.request.method !== 'GET') return;
+
   event.respondWith(
-    caches.match(event.request)
+    fetch(event.request)
       .then((response) => {
-        if (response) {
-          return response;
+        // Clone and cache successful responses
+        if (response.ok) {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, clone);
+          });
         }
-        return fetch(event.request);
+        return response;
+      })
+      .catch(() => {
+        // Offline: serve from cache
+        return caches.match(event.request);
       })
   );
 });

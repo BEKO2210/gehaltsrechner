@@ -3,1013 +3,1262 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#0a0a0f">
+    <meta name="theme-color" content="#06060b">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>SALARY PRO | Enterprise Payroll Intelligence</title>
+    <meta name="description" content="Präziser Brutto-Netto-Rechner mit echten deutschen Steuerformeln (§32a EStG 2025). Live-Verdienst-Tracker als PWA.">
+    <title>SALARY PRO | Brutto-Netto-Rechner 2025</title>
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="apple-touch-icon" href="icons/icon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Premium Color System */
-            --bg-primary: #0a0a0f;
-            --bg-secondary: #12121a;
-            --bg-tertiary: #1a1a25;
-            --bg-card: rgba(26, 26, 37, 0.6);
-            --bg-glass: rgba(255, 255, 255, 0.03);
-            
-            /* Accent Colors - Gold/Cyan Premium */
-            --accent-gold: #ffd700;
-            --accent-gold-soft: rgba(255, 215, 0, 0.1);
+            --bg-primary: #06060b;
+            --bg-secondary: #0d0d14;
+            --bg-tertiary: #14141f;
+            --bg-card: rgba(20, 20, 31, 0.7);
+            --bg-glass: rgba(255, 255, 255, 0.02);
+            --bg-input: #0f0f1a;
+
+            --accent-gold: #f0c000;
+            --accent-gold-light: #ffd740;
+            --accent-gold-soft: rgba(240, 192, 0, 0.08);
             --accent-cyan: #00d4ff;
-            --accent-cyan-soft: rgba(0, 212, 255, 0.1);
-            --accent-success: #00f5a0;
-            --accent-danger: #ff4757;
-            --accent-warning: #ffa502;
-            
-            /* Text Colors */
-            --text-primary: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.7);
-            --text-tertiary: rgba(255, 255, 255, 0.5);
-            --text-muted: rgba(255, 255, 255, 0.3);
-            
-            /* Gradients */
-            --gradient-gold: linear-gradient(135deg, #ffd700 0%, #ffb700 50%, #ff8c00 100%);
-            --gradient-cyan: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
-            --gradient-dark: linear-gradient(180deg, rgba(255,215,0,0.1) 0%, transparent 100%);
-            --gradient-card: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
-            
-            /* Shadows */
-            --shadow-gold: 0 0 40px rgba(255, 215, 0, 0.15);
-            --shadow-cyan: 0 0 40px rgba(0, 212, 255, 0.15);
-            --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.4);
-            
-            /* Spacing */
+            --accent-cyan-soft: rgba(0, 212, 255, 0.08);
+            --accent-success: #00e88f;
+            --accent-danger: #ff4060;
+            --accent-warning: #ff9f1a;
+            --accent-purple: #a78bfa;
+
+            --text-primary: #f0f0f5;
+            --text-secondary: rgba(240, 240, 245, 0.65);
+            --text-tertiary: rgba(240, 240, 245, 0.4);
+            --text-muted: rgba(240, 240, 245, 0.25);
+
+            --gradient-gold: linear-gradient(135deg, #f0c000 0%, #ff9500 100%);
+            --gradient-cyan: linear-gradient(135deg, #00d4ff 0%, #0090cc 100%);
+            --gradient-success: linear-gradient(135deg, #00e88f 0%, #00b86b 100%);
+            --gradient-danger: linear-gradient(135deg, #ff4060 0%, #e0203f 100%);
+            --gradient-card: linear-gradient(160deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.005) 100%);
+
+            --shadow-gold: 0 4px 24px rgba(240, 192, 0, 0.12);
+            --shadow-cyan: 0 4px 24px rgba(0, 212, 255, 0.1);
+            --shadow-card: 0 8px 40px rgba(0, 0, 0, 0.5);
+
             --space-xs: 4px;
             --space-sm: 8px;
             --space-md: 16px;
             --space-lg: 24px;
             --space-xl: 32px;
-            --space-2xl: 48px;
-            
-            /* Border Radius */
-            --radius-sm: 8px;
-            --radius-md: 12px;
-            --radius-lg: 16px;
+
+            --radius-sm: 10px;
+            --radius-md: 14px;
+            --radius-lg: 18px;
             --radius-xl: 24px;
             --radius-full: 9999px;
+
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-        
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
             min-height: 100vh;
+            min-height: 100dvh;
             overflow-x: hidden;
             line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
         }
-        
-        /* Animated Background */
+
+        /* === Animated Background === */
         .bg-mesh {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background: 
-                radial-gradient(ellipse 80% 50% at 20% 40%, rgba(255, 215, 0, 0.08) 0%, transparent 50%),
-                radial-gradient(ellipse 60% 40% at 80% 60%, rgba(0, 212, 255, 0.06) 0%, transparent 50%),
-                radial-gradient(ellipse 50% 30% at 50% 100%, rgba(255, 140, 0, 0.05) 0%, transparent 50%);
-            animation: meshMove 20s ease-in-out infinite;
+            position: fixed; inset: 0; z-index: -2;
+            background:
+                radial-gradient(ellipse 70% 50% at 15% 30%, rgba(240, 192, 0, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse 50% 40% at 85% 60%, rgba(0, 212, 255, 0.04) 0%, transparent 50%),
+                radial-gradient(ellipse 60% 30% at 50% 90%, rgba(167, 139, 250, 0.03) 0%, transparent 50%);
+            animation: meshMove 25s ease-in-out infinite;
         }
-        
         @keyframes meshMove {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(2%, -2%) scale(1.02); }
-            66% { transform: translate(-1%, 1%) scale(0.98); }
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 1; }
+            33% { transform: translate(1.5%, -1.5%) scale(1.01); opacity: 0.9; }
+            66% { transform: translate(-1%, 1%) scale(0.99); opacity: 1; }
         }
-        
-        /* Noise Texture Overlay */
+
         .noise-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            opacity: 0.03;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-            pointer-events: none;
+            position: fixed; inset: 0; z-index: -1; opacity: 0.025; pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
         }
-        
-        /* App Container */
+
+        /* === App Container === */
         .app-container {
             max-width: 480px;
             margin: 0 auto;
-            padding: var(--space-lg);
-            padding-bottom: 120px;
+            padding: 0 var(--space-lg);
+            padding-bottom: 140px;
         }
-        
-        /* Header */
+
+        /* === Header === */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: var(--space-md) 0;
-            margin-bottom: var(--space-xl);
+            padding: var(--space-lg) 0 var(--space-md);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: linear-gradient(180deg, var(--bg-primary) 60%, transparent);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
         }
-        
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
-        }
-        
+
+        .brand { display: flex; align-items: center; gap: 10px; }
+
         .brand-icon {
-            width: 40px;
-            height: 40px;
+            width: 38px; height: 38px;
             background: var(--gradient-gold);
-            border-radius: var(--radius-md);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
+            border-radius: var(--radius-sm);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; font-weight: 800;
+            color: var(--bg-primary);
             box-shadow: var(--shadow-gold);
+            font-family: 'JetBrains Mono', monospace;
         }
-        
-        .brand-text {
-            display: flex;
-            flex-direction: column;
-        }
-        
+
+        .brand-text { display: flex; flex-direction: column; }
         .brand-name {
-            font-size: 18px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-            background: var(--gradient-gold);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-size: 16px; font-weight: 800; letter-spacing: 0.5px;
+            background: var(--gradient-gold); -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent; background-clip: text;
         }
-        
         .brand-tagline {
-            font-size: 10px;
-            color: var(--text-tertiary);
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            font-size: 9px; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 1.5px; font-weight: 500;
         }
-        
-        .header-actions {
-            display: flex;
-            gap: var(--space-sm);
-        }
-        
-        .icon-btn {
-            width: 40px;
-            height: 40px;
+
+        .header-badge {
+            font-size: 10px; font-weight: 700;
+            padding: 5px 10px;
+            background: var(--accent-gold-soft);
+            color: var(--accent-gold);
             border-radius: var(--radius-full);
-            background: var(--bg-glass);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            border: 1px solid rgba(240, 192, 0, 0.15);
+            letter-spacing: 0.3px;
         }
-        
-        .icon-btn:hover {
-            background: rgba(255, 255, 255, 0.08);
-            transform: scale(1.05);
+
+        /* === Section Labels === */
+        .section-label {
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1.5px; color: var(--text-muted);
+            margin: var(--space-xl) 0 var(--space-md);
+            padding-left: 2px;
         }
-        
-        /* Main Display - Hero Card */
+
+        /* === Hero Card === */
         .hero-card {
             background: var(--gradient-card);
-            border: 1px solid rgba(255, 215, 0, 0.2);
+            border: 1px solid rgba(240, 192, 0, 0.15);
             border-radius: var(--radius-xl);
-            padding: var(--space-xl);
-            margin-bottom: var(--space-xl);
-            position: relative;
-            overflow: hidden;
-            box-shadow: var(--shadow-gold), var(--shadow-card);
+            padding: var(--space-xl) var(--space-lg);
+            position: relative; overflow: hidden;
+            box-shadow: var(--shadow-card);
         }
-        
         .hero-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: var(--gradient-gold);
-            opacity: 0.5;
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+            background: var(--gradient-gold); opacity: 0.4;
         }
-        
+        .hero-card::after {
+            content: ''; position: absolute; top: -40%; right: -20%;
+            width: 200px; height: 200px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(240, 192, 0, 0.06) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--space-xs); }
         .hero-label {
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--accent-gold);
-            margin-bottom: var(--space-sm);
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 2px; color: var(--accent-gold);
         }
-        
+        .hero-year-badge {
+            font-size: 9px; font-weight: 700; padding: 3px 8px;
+            background: rgba(0, 232, 143, 0.1); color: var(--accent-success);
+            border-radius: var(--radius-full); letter-spacing: 0.5px;
+        }
         .hero-amount {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 48px;
-            font-weight: 700;
-            background: var(--gradient-gold);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            line-height: 1.1;
-            margin-bottom: var(--space-xs);
+            font-size: 44px; font-weight: 700;
+            background: var(--gradient-gold); -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent; background-clip: text;
+            line-height: 1.15; margin-bottom: 2px;
         }
-        
-        .hero-unit {
-            font-size: 14px;
-            color: var(--text-tertiary);
-            font-weight: 500;
-        }
-        
+        .hero-unit { font-size: 13px; color: var(--text-tertiary); font-weight: 500; margin-bottom: var(--space-lg); }
+
         .hero-stats {
-            display: flex;
-            gap: var(--space-lg);
-            margin-top: var(--space-lg);
+            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--space-md);
             padding-top: var(--space-lg);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
         }
-        
-        .hero-stat {
-            display: flex;
-            flex-direction: column;
-            gap: var(--space-xs);
-        }
-        
+        .hero-stat { display: flex; flex-direction: column; gap: 2px; }
         .hero-stat-label {
-            font-size: 11px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            font-size: 10px; color: var(--text-muted); text-transform: uppercase;
+            letter-spacing: 0.5px; font-weight: 600;
         }
-        
         .hero-stat-value {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--text-secondary);
+            font-size: 15px; font-weight: 600; color: var(--text-secondary);
         }
-        
-        .hero-stat-value.positive {
-            color: var(--accent-success);
-        }
-        
-        .hero-stat-value.negative {
-            color: var(--accent-danger);
-        }
-        
-        /* Live Ticker */
+        .hero-stat-value.positive { color: var(--accent-success); }
+        .hero-stat-value.negative { color: var(--accent-danger); }
+        .hero-stat-value.warn { color: var(--accent-warning); }
+
+        /* === Live Ticker === */
         .live-section {
             background: var(--bg-card);
-            border: 1px solid rgba(0, 212, 255, 0.2);
+            border: 1px solid rgba(0, 212, 255, 0.12);
             border-radius: var(--radius-xl);
-            padding: var(--space-xl);
-            margin-bottom: var(--space-xl);
-            position: relative;
-            overflow: hidden;
+            padding: var(--space-xl) var(--space-lg);
+            position: relative; overflow: hidden;
         }
-        
         .live-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: var(--gradient-cyan);
-            opacity: 0.5;
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+            background: var(--gradient-cyan); opacity: 0.4;
         }
-        
-        .live-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: var(--space-lg);
-        }
-        
-        .live-title {
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
-            font-size: 14px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
+
+        .live-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md); }
+        .live-title { display: flex; align-items: center; gap: var(--space-sm); font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary); }
+
         .live-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--accent-success);
-            border-radius: var(--radius-full);
-            animation: pulse 2s infinite;
-            box-shadow: 0 0 10px var(--accent-success);
+            width: 7px; height: 7px; background: var(--accent-success);
+            border-radius: var(--radius-full); box-shadow: 0 0 8px var(--accent-success);
         }
-        
+        .live-dot.active { animation: pulse 1.5s infinite; }
         @keyframes pulse {
             0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.2); }
+            50% { opacity: 0.4; transform: scale(1.3); }
         }
-        
-        .live-badge {
-            font-size: 10px;
-            padding: var(--space-xs) var(--space-sm);
-            background: var(--accent-cyan-soft);
-            color: var(--accent-cyan);
-            border-radius: var(--radius-full);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+
+        .live-timer {
+            font-family: 'JetBrains Mono', monospace; font-size: 11px;
+            color: var(--text-muted); font-weight: 500;
         }
-        
+
         .live-amount {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 36px;
-            font-weight: 700;
-            text-align: center;
-            color: var(--accent-cyan);
-            text-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
-            margin-bottom: var(--space-lg);
+            font-size: 34px; font-weight: 700; text-align: center;
+            color: var(--accent-cyan); text-shadow: 0 0 30px rgba(0, 212, 255, 0.2);
+            margin-bottom: var(--space-lg); letter-spacing: -0.5px;
         }
-        
-        .live-breakdown {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: var(--space-md);
-        }
-        
+
+        .live-breakdown { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
         .breakdown-item {
-            text-align: center;
-            padding: var(--space-md);
-            background: var(--bg-glass);
-            border-radius: var(--radius-md);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center; padding: 12px 8px;
+            background: rgba(255,255,255,0.02); border-radius: var(--radius-md);
+            border: 1px solid rgba(255, 255, 255, 0.04);
         }
-        
-        .breakdown-label {
-            font-size: 10px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: var(--space-xs);
-        }
-        
-        .breakdown-value {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 16px;
-            font-weight: 600;
-        }
-        
-        .breakdown-value.net {
-            color: var(--accent-success);
-        }
-        
-        .breakdown-value.tax {
-            color: var(--accent-danger);
-        }
-        
-        .breakdown-value.social {
-            color: var(--accent-warning);
-        }
-        
-        /* Input Section */
+        .breakdown-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; font-weight: 600; }
+        .breakdown-value { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 600; }
+        .breakdown-value.net { color: var(--accent-success); }
+        .breakdown-value.tax { color: var(--accent-danger); }
+        .breakdown-value.social { color: var(--accent-warning); }
+
+        /* === Input Section === */
         .input-section {
             background: var(--bg-card);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: var(--radius-xl);
-            padding: var(--space-xl);
-            margin-bottom: var(--space-xl);
+            padding: var(--space-xl) var(--space-lg);
         }
-        
-        .section-header {
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
-            margin-bottom: var(--space-lg);
-        }
-        
+
+        .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: var(--space-lg); }
         .section-icon {
-            width: 32px;
-            height: 32px;
-            background: var(--gradient-cyan);
-            border-radius: var(--radius-md);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
+            width: 30px; height: 30px; background: var(--gradient-cyan);
+            border-radius: var(--radius-sm); display: flex; align-items: center;
+            justify-content: center; font-size: 14px;
         }
-        
-        .section-title {
-            font-size: 16px;
-            font-weight: 700;
-        }
-        
-        .input-group {
-            margin-bottom: var(--space-lg);
-        }
-        
+        .section-title { font-size: 15px; font-weight: 700; letter-spacing: 0.2px; }
+
+        .input-group { margin-bottom: var(--space-lg); }
         .input-label {
-            display: block;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 11px; font-weight: 600; color: var(--text-secondary);
+            text-transform: uppercase; letter-spacing: 0.5px;
             margin-bottom: var(--space-sm);
         }
-        
-        .input-wrapper {
-            position: relative;
-        }
-        
+        .input-hint { color: var(--text-muted); text-transform: none; letter-spacing: 0; font-weight: 500; font-size: 10px; }
+
+        .input-wrapper { position: relative; }
         .input-field {
-            width: 100%;
-            background: var(--bg-tertiary);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: var(--radius-lg);
-            padding: var(--space-md) var(--space-lg);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--text-primary);
-            transition: all 0.3s ease;
-        }
-        
-        .input-field:focus {
-            outline: none;
-            border-color: var(--accent-gold);
-            box-shadow: 0 0 0 3px var(--accent-gold-soft);
-        }
-        
-        .input-suffix {
-            position: absolute;
-            right: var(--space-lg);
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 14px;
-            color: var(--text-tertiary);
-            font-weight: 600;
-        }
-        
-        /* Toggle Group */
-        .toggle-group {
-            display: flex;
-            background: var(--bg-tertiary);
-            border-radius: var(--radius-lg);
-            padding: var(--space-xs);
-            margin-bottom: var(--space-lg);
-        }
-        
-        .toggle-btn {
-            flex: 1;
-            padding: var(--space-md);
-            border: none;
-            background: transparent;
-            color: var(--text-tertiary);
-            font-size: 14px;
-            font-weight: 600;
+            width: 100%; background: var(--bg-input);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: var(--radius-md);
-            cursor: pointer;
-            transition: all 0.3s ease;
+            padding: 14px var(--space-lg); padding-right: 50px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 17px; font-weight: 600;
+            color: var(--text-primary); transition: var(--transition);
         }
-        
+        .input-field:focus {
+            outline: none; border-color: var(--accent-gold);
+            box-shadow: 0 0 0 3px var(--accent-gold-soft), 0 0 20px var(--accent-gold-soft);
+        }
+        .input-suffix {
+            position: absolute; right: var(--space-lg); top: 50%;
+            transform: translateY(-50%); font-size: 13px;
+            color: var(--text-muted); font-weight: 600;
+        }
+
+        /* Toggle */
+        .toggle-group {
+            display: flex; background: var(--bg-input);
+            border-radius: var(--radius-md); padding: 3px;
+            margin-bottom: var(--space-lg); border: 1px solid rgba(255,255,255,0.06);
+        }
+        .toggle-btn {
+            flex: 1; padding: 11px; border: none; background: transparent;
+            color: var(--text-tertiary); font-size: 13px; font-weight: 600;
+            border-radius: var(--radius-sm); cursor: pointer; transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+        }
         .toggle-btn.active {
-            background: var(--gradient-gold);
-            color: var(--bg-primary);
-            box-shadow: var(--shadow-gold);
+            background: var(--gradient-gold); color: var(--bg-primary);
+            box-shadow: var(--shadow-gold); font-weight: 700;
         }
-        
-        /* Slider */
-        .slider-container {
-            margin-bottom: var(--space-lg);
+
+        /* Steuerklasse Selector */
+        .sk-selector {
+            display: grid; grid-template-columns: repeat(6, 1fr);
+            gap: 6px; margin-bottom: var(--space-md);
         }
-        
-        .slider-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: var(--space-sm);
-        }
-        
-        .slider-value {
+        .sk-btn {
+            padding: 10px 0; border: 1px solid rgba(255,255,255,0.08);
+            background: var(--bg-input); color: var(--text-tertiary);
+            font-size: 13px; font-weight: 700; border-radius: var(--radius-sm);
+            cursor: pointer; transition: var(--transition); text-align: center;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--accent-gold);
         }
-        
-        input[type="range"] {
-            width: 100%;
-            height: 6px;
-            background: var(--bg-tertiary);
-            border-radius: var(--radius-full);
-            outline: none;
-            -webkit-appearance: none;
+        .sk-btn.active {
+            background: var(--gradient-gold); color: var(--bg-primary);
+            border-color: var(--accent-gold); box-shadow: var(--shadow-gold);
         }
-        
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 20px;
-            height: 20px;
-            background: var(--gradient-gold);
-            border-radius: var(--radius-full);
-            cursor: pointer;
-            box-shadow: var(--shadow-gold);
+        .sk-btn:not(.active):active { background: rgba(255,255,255,0.05); }
+        .sk-desc {
+            font-size: 10px; color: var(--text-muted); text-align: center;
+            margin-bottom: var(--space-lg); font-weight: 500;
         }
-        
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: var(--space-md);
-            margin-bottom: var(--space-xl);
+
+        /* Checkboxes */
+        .checkbox-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: var(--space-lg); }
+        .checkbox-item {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 12px 14px; background: var(--bg-input);
+            border-radius: var(--radius-md); border: 1px solid rgba(255,255,255,0.06);
+            cursor: pointer; transition: var(--transition);
         }
-        
+        .checkbox-item:active { background: rgba(255,255,255,0.04); }
+        .checkbox-left { display: flex; align-items: center; gap: 10px; }
+        .checkbox-icon { font-size: 16px; }
+        .checkbox-text { font-size: 12px; font-weight: 600; color: var(--text-secondary); }
+        .checkbox-sub { font-size: 10px; color: var(--text-muted); font-weight: 400; }
+
+        .toggle-switch {
+            width: 42px; height: 24px; border-radius: var(--radius-full);
+            background: rgba(255,255,255,0.1); position: relative;
+            transition: var(--transition); flex-shrink: 0;
+        }
+        .toggle-switch::after {
+            content: ''; position: absolute; width: 18px; height: 18px;
+            border-radius: 50%; background: var(--text-tertiary);
+            top: 3px; left: 3px; transition: var(--transition);
+        }
+        .toggle-switch.on { background: var(--accent-gold); }
+        .toggle-switch.on::after { transform: translateX(18px); background: var(--bg-primary); }
+
+        /* Kinder select */
+        .kinder-select {
+            display: flex; gap: 6px; padding: 4px;
+            background: var(--bg-input); border-radius: var(--radius-md);
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .kinder-btn {
+            flex: 1; padding: 8px 0; border: none; background: transparent;
+            color: var(--text-muted); font-size: 12px; font-weight: 700;
+            border-radius: var(--radius-sm); cursor: pointer; transition: var(--transition);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .kinder-btn.active {
+            background: rgba(240, 192, 0, 0.15); color: var(--accent-gold);
+        }
+
+        /* === Stats Grid === */
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
         .stat-card {
+            background: var(--bg-card); border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius-lg); padding: var(--space-lg) var(--space-md);
+            transition: var(--transition);
+        }
+        .stat-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; font-weight: 600; }
+        .stat-value { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; }
+
+        /* === Deductions Breakdown === */
+        .deductions-card {
             background: var(--bg-card);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: var(--radius-lg);
-            padding: var(--space-lg);
-            transition: all 0.3s ease;
-        }
-        
-        .stat-card:hover {
-            border-color: rgba(255, 215, 0, 0.2);
-            transform: translateY(-2px);
-        }
-        
-        .stat-label {
-            font-size: 11px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: var(--space-xs);
-        }
-        
-        .stat-value {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-        
-        /* Progress Bars */
-        .progress-section {
-            background: var(--bg-card);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255,255,255,0.06);
             border-radius: var(--radius-xl);
-            padding: var(--space-xl);
-            margin-bottom: var(--space-xl);
-        }
-        
-        .progress-item {
-            margin-bottom: var(--space-lg);
-        }
-        
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: var(--space-sm);
-        }
-        
-        .progress-label {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-secondary);
-        }
-        
-        .progress-value {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--accent-gold);
-        }
-        
-        .progress-bar {
-            height: 8px;
-            background: var(--bg-tertiary);
-            border-radius: var(--radius-full);
+            padding: var(--space-xl) var(--space-lg);
             overflow: hidden;
         }
-        
-        .progress-fill {
-            height: 100%;
-            border-radius: var(--radius-full);
-            transition: width 0.5s ease;
+
+        .deduction-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
         }
-        
-        .progress-fill.tax {
-            background: var(--gradient-gold);
+        .deduction-row:last-child { border-bottom: none; }
+        .deduction-left { display: flex; align-items: center; gap: 10px; }
+        .deduction-dot {
+            width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
         }
-        
-        .progress-fill.social {
-            background: var(--gradient-cyan);
+        .deduction-name { font-size: 12px; font-weight: 500; color: var(--text-secondary); }
+        .deduction-right { text-align: right; }
+        .deduction-amount {
+            font-family: 'JetBrains Mono', monospace; font-size: 13px;
+            font-weight: 600; color: var(--text-primary);
         }
-        
-        /* Action Buttons */
+        .deduction-percent {
+            font-size: 10px; color: var(--text-muted); font-weight: 500;
+        }
+
+        .deduction-total {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 14px 0 4px; margin-top: 4px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+        .deduction-total-label { font-size: 12px; font-weight: 700; color: var(--text-secondary); }
+        .deduction-total-value {
+            font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700;
+        }
+
+        /* Progress ring visual */
+        .netto-visual {
+            display: flex; align-items: center; justify-content: center;
+            gap: var(--space-lg);
+            padding: var(--space-lg) 0 var(--space-sm);
+        }
+        .ring-container { position: relative; width: 100px; height: 100px; flex-shrink: 0; }
+        .ring-svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+        .ring-bg { fill: none; stroke: rgba(255,255,255,0.05); stroke-width: 6; }
+        .ring-fill-tax { fill: none; stroke: var(--accent-danger); stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset 0.6s ease; }
+        .ring-fill-social { fill: none; stroke: var(--accent-warning); stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset 0.6s ease; }
+        .ring-fill-net { fill: none; stroke: var(--accent-success); stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset 0.6s ease; }
+        .ring-center {
+            position: absolute; inset: 0; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+        }
+        .ring-percent { font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 700; color: var(--accent-success); }
+        .ring-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+
+        .ring-legend { display: flex; flex-direction: column; gap: 8px; }
+        .legend-item { display: flex; align-items: center; gap: 8px; }
+        .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+        .legend-text { font-size: 11px; color: var(--text-secondary); font-weight: 500; }
+        .legend-val { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-tertiary); font-weight: 600; margin-left: auto; }
+
+        /* === Action Bar === */
         .action-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(180deg, transparent 0%, var(--bg-primary) 20%);
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: linear-gradient(180deg, transparent 0%, var(--bg-primary) 30%);
             padding: var(--space-lg);
             padding-bottom: calc(var(--space-lg) + env(safe-area-inset-bottom));
-            display: flex;
-            gap: var(--space-md);
-            z-index: 100;
+            display: flex; gap: 10px; z-index: 100;
         }
-        
+
         .btn {
-            flex: 1;
-            padding: var(--space-md) var(--space-lg);
-            border: none;
-            border-radius: var(--radius-lg);
-            font-size: 14px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: var(--space-sm);
+            flex: 1; padding: 14px var(--space-lg); border: none;
+            border-radius: var(--radius-md); font-size: 13px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer;
+            transition: var(--transition); display: flex; align-items: center;
+            justify-content: center; gap: var(--space-sm);
+            font-family: 'Inter', sans-serif;
         }
-        
         .btn-primary {
-            background: var(--gradient-gold);
-            color: var(--bg-primary);
+            background: var(--gradient-gold); color: var(--bg-primary);
             box-shadow: var(--shadow-gold);
         }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(255, 215, 0, 0.3);
-        }
-        
+        .btn-primary:active { transform: scale(0.97); }
         .btn-secondary {
-            background: var(--bg-tertiary);
-            color: var(--text-secondary);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--bg-tertiary); color: var(--text-secondary);
+            border: 1px solid rgba(255,255,255,0.08);
         }
-        
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.08);
-            color: var(--text-primary);
-        }
-        
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+        .btn-secondary:active { background: rgba(255,255,255,0.06); }
+
+        /* === Animations === */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(16px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        
-        .animate-in {
-            animation: fadeIn 0.5s ease forwards;
+        .animate-in { animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        .delay-1 { animation-delay: 0.05s; opacity: 0; }
+        .delay-2 { animation-delay: 0.1s; opacity: 0; }
+        .delay-3 { animation-delay: 0.15s; opacity: 0; }
+        .delay-4 { animation-delay: 0.2s; opacity: 0; }
+        .delay-5 { animation-delay: 0.25s; opacity: 0; }
+        .delay-6 { animation-delay: 0.3s; opacity: 0; }
+
+        /* === Info Tooltip === */
+        .info-badge {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 16px; height: 16px; border-radius: 50%;
+            background: rgba(255,255,255,0.06); font-size: 9px;
+            color: var(--text-muted); cursor: pointer; font-weight: 700;
+            margin-left: 4px; vertical-align: middle;
         }
-        
-        /* Responsive */
+
+        /* === Responsive === */
         @media (min-width: 768px) {
-            .app-container {
-                max-width: 600px;
-            }
-            
-            .hero-amount {
-                font-size: 64px;
-            }
-            
-            .live-amount {
-                font-size: 48px;
-            }
+            .app-container { max-width: 520px; }
+            .hero-amount { font-size: 54px; }
+            .live-amount { font-size: 42px; }
         }
+        @media (max-width: 360px) {
+            .hero-amount { font-size: 36px; }
+            .live-amount { font-size: 28px; }
+            .hero-stats { grid-template-columns: 1fr 1fr; }
+            .sk-selector { gap: 4px; }
+            .sk-btn { font-size: 11px; padding: 8px 0; }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 0; height: 0; }
     </style>
 </head>
 <body>
     <div class="bg-mesh"></div>
     <div class="noise-overlay"></div>
-    
+
     <div class="app-container">
         <!-- Header -->
         <header class="header">
             <div class="brand">
-                <div class="brand-icon">€</div>
+                <div class="brand-icon">S</div>
                 <div class="brand-text">
                     <div class="brand-name">SALARY PRO</div>
-                    <div class="brand-tagline">Enterprise Payroll Intelligence</div>
+                    <div class="brand-tagline">Brutto-Netto-Rechner</div>
                 </div>
             </div>
-            <div class="header-actions">
-                <button class="icon-btn">⚙️</button>
-                <button class="icon-btn">👤</button>
-            </div>
+            <div class="header-badge">2025</div>
         </header>
-        
+
         <!-- Hero Card -->
-        <div class="hero-card animate-in">
-            <div class="hero-label">Netto Verdienst</div>
-            <div class="hero-amount" id="nettoDisplay">€0,00</div>
-            <div class="hero-unit">pro Stunde</div>
-            
+        <div class="hero-card animate-in delay-1">
+            <div class="hero-top">
+                <div class="hero-label">Netto Gehalt</div>
+                <div class="hero-year-badge" id="taxInfoBadge">&#167;32a EStG</div>
+            </div>
+            <div class="hero-amount" id="nettoDisplay">&#8364;0,00</div>
+            <div class="hero-unit" id="heroUnit">pro Monat</div>
+
             <div class="hero-stats">
                 <div class="hero-stat">
                     <div class="hero-stat-label">Brutto</div>
-                    <div class="hero-stat-value" id="bruttoDisplay">€0,00</div>
+                    <div class="hero-stat-value" id="bruttoHero">&#8364;0</div>
                 </div>
                 <div class="hero-stat">
-                    <div class="hero-stat-label">Abgaben</div>
-                    <div class="hero-stat-value negative" id="abgabenDisplay">€0,00</div>
+                    <div class="hero-stat-label">Steuern</div>
+                    <div class="hero-stat-value negative" id="steuernHero">-&#8364;0</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-label">Sozial</div>
+                    <div class="hero-stat-value warn" id="sozialHero">-&#8364;0</div>
                 </div>
             </div>
         </div>
-        
+
         <!-- Live Ticker -->
-        <div class="live-section animate-in">
+        <div class="section-label animate-in delay-2">Live Verdienst</div>
+        <div class="live-section animate-in delay-2">
             <div class="live-header">
                 <div class="live-title">
-                    <div class="live-dot"></div>
-                    Live Verdienst
+                    <div class="live-dot" id="liveDot"></div>
+                    Echtzeit-Tracker
                 </div>
-                <div class="live-badge">Real-Time</div>
+                <div class="live-timer" id="liveTimer">00:00:00</div>
             </div>
-            
-            <div class="live-amount" id="liveVerdienst">€0,00</div>
-            
+
+            <div class="live-amount" id="liveVerdienst">&#8364;0,00</div>
+
             <div class="live-breakdown">
                 <div class="breakdown-item">
                     <div class="breakdown-label">Netto</div>
-                    <div class="breakdown-value net" id="liveNetto">€0,00</div>
+                    <div class="breakdown-value net" id="liveNetto">&#8364;0,00</div>
                 </div>
                 <div class="breakdown-item">
                     <div class="breakdown-label">Steuern</div>
-                    <div class="breakdown-value tax" id="liveSteuern">-€0,00</div>
+                    <div class="breakdown-value tax" id="liveSteuern">&#8364;0,00</div>
                 </div>
                 <div class="breakdown-item">
                     <div class="breakdown-label">Sozial</div>
-                    <div class="breakdown-value social" id="liveSozial">-€0,00</div>
+                    <div class="breakdown-value social" id="liveSozial">&#8364;0,00</div>
                 </div>
             </div>
         </div>
-        
-        <!-- Input Section -->
-        <div class="input-section animate-in">
+
+        <!-- Configuration -->
+        <div class="section-label animate-in delay-3">Konfiguration</div>
+        <div class="input-section animate-in delay-3">
             <div class="section-header">
-                <div class="section-icon">⚙️</div>
-                <div class="section-title">Konfiguration</div>
+                <div class="section-icon">&#9881;</div>
+                <div class="section-title">Gehaltsangaben</div>
             </div>
-            
+
+            <!-- Period Toggle -->
             <div class="toggle-group">
-                <button class="toggle-btn active" id="btnMonth" onclick="setPeriod('month')">Monat</button>
-                <button class="toggle-btn" id="btnYear" onclick="setPeriod('year')">Jahr</button>
+                <button class="toggle-btn active" id="btnMonth" onclick="setPeriod('month')">Monatlich</button>
+                <button class="toggle-btn" id="btnYear" onclick="setPeriod('year')">J&#228;hrlich</button>
             </div>
-            
+
+            <!-- Brutto Input -->
             <div class="input-group">
-                <label class="input-label">Brutto Gehalt</label>
+                <label class="input-label">
+                    Brutto Gehalt
+                    <span class="input-hint" id="inputHint">monatlich</span>
+                </label>
                 <div class="input-wrapper">
-                    <input type="number" class="input-field" id="bruttoInput" value="5000" oninput="calculate()">
-                    <span class="input-suffix">€</span>
+                    <input type="number" class="input-field" id="bruttoInput" value="4500" inputmode="decimal" oninput="calculate()">
+                    <span class="input-suffix">&#8364;</span>
                 </div>
             </div>
-            
+
+            <!-- Stunden -->
             <div class="input-group">
-                <label class="input-label">Stunden pro Woche</label>
+                <label class="input-label">
+                    Arbeitsstunden / Woche
+                    <span class="input-hint" id="stundenHint">= 173,3 Std/Mon.</span>
+                </label>
                 <div class="input-wrapper">
-                    <input type="number" class="input-field" id="stundenInput" value="40" oninput="calculate()">
+                    <input type="number" class="input-field" id="stundenInput" value="40" inputmode="decimal" oninput="calculate()">
                     <span class="input-suffix">Std</span>
                 </div>
             </div>
-            
-            <div class="slider-container">
-                <div class="slider-header">
-                    <label class="input-label">Steuerklasse</label>
-                    <span class="slider-value" id="steuerklasseValue">I</span>
+
+            <!-- Steuerklasse -->
+            <div class="input-group">
+                <label class="input-label">Steuerklasse</label>
+                <div class="sk-selector" id="skSelector">
+                    <button class="sk-btn active" data-sk="1" onclick="setSteuerklasse(1)">I</button>
+                    <button class="sk-btn" data-sk="2" onclick="setSteuerklasse(2)">II</button>
+                    <button class="sk-btn" data-sk="3" onclick="setSteuerklasse(3)">III</button>
+                    <button class="sk-btn" data-sk="4" onclick="setSteuerklasse(4)">IV</button>
+                    <button class="sk-btn" data-sk="5" onclick="setSteuerklasse(5)">V</button>
+                    <button class="sk-btn" data-sk="6" onclick="setSteuerklasse(6)">VI</button>
                 </div>
-                <input type="range" min="1" max="6" value="1" id="steuerklasseInput" oninput="updateSteuerklasse(); calculate()">
+                <div class="sk-desc" id="skDesc">Ledig, keine Kinder</div>
+            </div>
+
+            <!-- Options -->
+            <label class="input-label">Optionen</label>
+            <div class="checkbox-group">
+                <div class="checkbox-item" onclick="toggleOption('kirchensteuer')">
+                    <div class="checkbox-left">
+                        <span class="checkbox-icon">&#9769;</span>
+                        <div>
+                            <div class="checkbox-text">Kirchensteuer</div>
+                            <div class="checkbox-sub" id="kirchensteuerSub">9% (meiste Bundesl&#228;nder)</div>
+                        </div>
+                    </div>
+                    <div class="toggle-switch" id="toggleKirchensteuer"></div>
+                </div>
+                <div class="checkbox-item" onclick="toggleOption('kinderlos')">
+                    <div class="checkbox-left">
+                        <span class="checkbox-icon">&#128118;</span>
+                        <div>
+                            <div class="checkbox-text">Kinderlos (23+)</div>
+                            <div class="checkbox-sub">+0,6% Pflegeversicherung</div>
+                        </div>
+                    </div>
+                    <div class="toggle-switch on" id="toggleKinderlos"></div>
+                </div>
+            </div>
+
+            <!-- Kinder Anzahl -->
+            <div class="input-group" id="kinderGroup" style="display:none;">
+                <label class="input-label">Anzahl Kinder (unter 25)</label>
+                <div class="kinder-select" id="kinderSelect">
+                    <button class="kinder-btn active" data-k="1" onclick="setKinder(1)">1</button>
+                    <button class="kinder-btn" data-k="2" onclick="setKinder(2)">2</button>
+                    <button class="kinder-btn" data-k="3" onclick="setKinder(3)">3</button>
+                    <button class="kinder-btn" data-k="4" onclick="setKinder(4)">4</button>
+                    <button class="kinder-btn" data-k="5" onclick="setKinder(5)">5+</button>
+                </div>
+            </div>
+
+            <!-- Zusatzbeitrag -->
+            <div class="input-group">
+                <label class="input-label">
+                    KV-Zusatzbeitrag
+                    <span class="input-hint">Durchschn. 2,5%</span>
+                </label>
+                <div class="input-wrapper">
+                    <input type="number" class="input-field" id="zusatzbeitragInput" value="2.5" step="0.1" inputmode="decimal" oninput="calculate()">
+                    <span class="input-suffix">%</span>
+                </div>
             </div>
         </div>
-        
+
         <!-- Stats Grid -->
-        <div class="stats-grid">
+        <div class="section-label animate-in delay-4">Netto &#220;bersicht</div>
+        <div class="stats-grid animate-in delay-4">
             <div class="stat-card">
-                <div class="stat-label">Pro Tag</div>
-                <div class="stat-value" id="tagDisplay">€0</div>
+                <div class="stat-label">Pro Stunde</div>
+                <div class="stat-value" id="stundeDisplay" style="color: var(--accent-success)">&#8364;0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Pro Tag (8h)</div>
+                <div class="stat-value" id="tagDisplay" style="color: var(--accent-success)">&#8364;0</div>
             </div>
             <div class="stat-card">
                 <div class="stat-label">Pro Woche</div>
-                <div class="stat-value" id="wocheDisplay">€0</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Pro Monat</div>
-                <div class="stat-value" id="monatDisplay">€0</div>
+                <div class="stat-value" id="wocheDisplay" style="color: var(--accent-success)">&#8364;0</div>
             </div>
             <div class="stat-card">
                 <div class="stat-label">Pro Jahr</div>
-                <div class="stat-value" id="jahrDisplay">€0</div>
+                <div class="stat-value" id="jahrDisplay" style="color: var(--accent-success)">&#8364;0</div>
             </div>
         </div>
-        
-        <!-- Progress Bars -->
-        <div class="progress-section">
-            <div class="progress-item">
-                <div class="progress-header">
-                    <span class="progress-label">Lohnsteuer</span>
-                    <span class="progress-value" id="steuerProzent">0%</span>
+
+        <!-- Donut Chart -->
+        <div class="section-label animate-in delay-5">Verteilung</div>
+        <div class="deductions-card animate-in delay-5">
+            <div class="netto-visual">
+                <div class="ring-container">
+                    <svg class="ring-svg" viewBox="0 0 42 42">
+                        <circle class="ring-bg" cx="21" cy="21" r="18"/>
+                        <circle class="ring-fill-net" id="ringNet" cx="21" cy="21" r="18"
+                            stroke-dasharray="113.1" stroke-dashoffset="113.1"/>
+                        <circle class="ring-fill-tax" id="ringTax" cx="21" cy="21" r="18"
+                            stroke-dasharray="113.1" stroke-dashoffset="113.1"/>
+                        <circle class="ring-fill-social" id="ringSocial" cx="21" cy="21" r="18"
+                            stroke-dasharray="113.1" stroke-dashoffset="113.1"/>
+                    </svg>
+                    <div class="ring-center">
+                        <div class="ring-percent" id="ringPercent">0%</div>
+                        <div class="ring-label">Netto</div>
+                    </div>
                 </div>
-                <div class="progress-bar">
-                    <div class="progress-fill tax" id="steuerBar" style="width: 0%"></div>
+                <div class="ring-legend">
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background:var(--accent-success)"></div>
+                        <div class="legend-text">Netto</div>
+                        <div class="legend-val" id="legendNet">0%</div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background:var(--accent-danger)"></div>
+                        <div class="legend-text">Steuern</div>
+                        <div class="legend-val" id="legendTax">0%</div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background:var(--accent-warning)"></div>
+                        <div class="legend-text">Sozial</div>
+                        <div class="legend-val" id="legendSocial">0%</div>
+                    </div>
                 </div>
             </div>
-            
-            <div class="progress-item">
-                <div class="progress-header">
-                    <span class="progress-label">Sozialabgaben</span>
-                    <span class="progress-value" id="sozialProzent">0%</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill social" id="sozialBar" style="width: 0%"></div>
-                </div>
+        </div>
+
+        <!-- Detailed Deductions -->
+        <div class="section-label animate-in delay-6">Abz&#252;ge im Detail</div>
+        <div class="deductions-card animate-in delay-6">
+            <div id="deductionsList"></div>
+            <div class="deduction-total">
+                <div class="deduction-total-label">Gesamt Abz&#252;ge</div>
+                <div class="deduction-total-value" id="totalAbzuege" style="color: var(--accent-danger)">&#8364;0</div>
             </div>
         </div>
     </div>
-    
+
     <!-- Action Bar -->
     <div class="action-bar">
-        <button class="btn btn-secondary" onclick="resetCalculation()">
-            <span>🔄</span>
+        <button class="btn btn-secondary" onclick="resetCalculation()" aria-label="Timer zur&#252;cksetzen">
+            <span>&#8635;</span>
             <span>Reset</span>
         </button>
-        <button class="btn btn-primary" onclick="startCalculation()">
-            <span>▶️</span>
+        <button class="btn btn-primary" onclick="startCalculation()" aria-label="Timer starten oder pausieren">
+            <span id="startBtnIcon">&#9654;</span>
             <span id="startBtnText">Start</span>
         </button>
     </div>
-    
+
     <script>
-        // State
-        let isMonthly = true;
-        let isRunning = false;
-        let startTime = null;
-        let accumulatedTime = 0;
-        let timerInterval = null;
-        
-        // Steuerklassen
-        const steuerklassen = {
-            1: { faktor: 1.0, name: 'I' },
-            2: { faktor: 0.9, name: 'II' },
-            3: { faktor: 0.8, name: 'III' },
-            4: { faktor: 1.0, name: 'IV' },
-            5: { faktor: 1.2, name: 'V' },
-            6: { faktor: 1.4, name: 'VI' }
+    'use strict';
+
+    // =====================================================
+    // STATE
+    // =====================================================
+    let state = {
+        isMonthly: true,
+        steuerklasse: 1,
+        kirchensteuer: false,
+        kirchensteuerSatz: 9,
+        kinderlos: true,
+        kinder: 0,
+        zusatzbeitrag: 2.5,
+        isRunning: false,
+        startTime: null,
+        accumulatedTime: 0,
+        timerInterval: null,
+        rates: null
+    };
+
+    // =====================================================
+    // GERMAN TAX CONSTANTS 2025 (Section 32a EStG)
+    // =====================================================
+    const TAX_2025 = {
+        grundfreibetrag: 12096,
+        zone2Start: 12097,
+        zone2End: 17443,
+        zone3Start: 17444,
+        zone3End: 68480,
+        zone4Start: 68481,
+        zone4End: 277825,
+        zone5Start: 277826,
+
+        // Solidaritaetszuschlag
+        soliRate: 0.055,
+        soliFreigrenze: 19950,       // single
+        soliFreigrenzeSplitting: 39900,
+        soliMilderung: 0.119,
+
+        // Steuerklasse II Entlastungsbetrag
+        entlastungsbetrag: 4260,
+
+        // Werbungskostenpauschale
+        werbungskosten: 1230,
+
+        // Sonderausgabenpauschale
+        sonderausgaben: 36
+    };
+
+    // =====================================================
+    // SOCIAL INSURANCE CONSTANTS 2025
+    // =====================================================
+    const SV_2025 = {
+        // Rentenversicherung
+        rv_rate: 0.093,           // Employee share
+        rv_bbg_monat: 8050,       // BBG monthly (unified since 2025)
+
+        // Krankenversicherung
+        kv_rate: 0.073,           // Employee share of base rate
+        kv_bbg_monat: 5512.50,
+
+        // Pflegeversicherung
+        pv_base_rate: 0.018,      // Employee share (with children)
+        pv_kinderlos_zuschlag: 0.006,  // Zuschlag if childless 23+
+        pv_kinder_abschlag: 0.0025,    // Reduction per child (2nd-5th)
+        pv_bbg_monat: 5512.50,
+
+        // Arbeitslosenversicherung
+        av_rate: 0.013,           // Employee share
+        av_bbg_monat: 8050
+    };
+
+    // Steuerklasse descriptions
+    const SK_DESC = {
+        1: 'Ledig, keine Kinder',
+        2: 'Alleinerziehend',
+        3: 'Verheiratet, h\u00f6herer Verdienst',
+        4: 'Verheiratet, gleicher Verdienst',
+        5: 'Verheiratet, geringerer Verdienst',
+        6: 'Zweitjob / Nebenerwerb'
+    };
+
+    // =====================================================
+    // TAX CALCULATION ENGINE (Section 32a EStG 2025)
+    // =====================================================
+    function calcEinkommensteuer(zvE) {
+        // zvE = zu versteuerndes Einkommen (taxable income), rounded down
+        zvE = Math.floor(zvE);
+        if (zvE <= 0) return 0;
+
+        let est;
+        if (zvE <= TAX_2025.grundfreibetrag) {
+            // Zone 1: Tax-free
+            est = 0;
+        } else if (zvE <= TAX_2025.zone2End) {
+            // Zone 2: Progressive 14% to ~24%
+            const y = (zvE - 12096) / 10000;
+            est = (932.30 * y + 1400) * y;
+        } else if (zvE <= TAX_2025.zone3End) {
+            // Zone 3: Progressive ~24% to 42%
+            const z = (zvE - 17443) / 10000;
+            est = (176.64 * z + 2397) * z + 1015.13;
+        } else if (zvE <= TAX_2025.zone4End) {
+            // Zone 4: Proportional 42%
+            est = 0.42 * zvE - 10911.92;
+        } else {
+            // Zone 5: Reichensteuer 45%
+            est = 0.45 * zvE - 19246.67;
+        }
+
+        return Math.floor(est); // Round down to full euros
+    }
+
+    function calcLohnsteuer(bruttoJahr, steuerklasse) {
+        let zvE;
+
+        // Calculate zvE based on Steuerklasse
+        switch (steuerklasse) {
+            case 1:
+            case 4:
+                // Standard: Brutto - Werbungskosten - Sonderausgaben
+                zvE = bruttoJahr - TAX_2025.werbungskosten - TAX_2025.sonderausgaben;
+                break;
+            case 2:
+                // Single parent: Additional Entlastungsbetrag
+                zvE = bruttoJahr - TAX_2025.werbungskosten - TAX_2025.sonderausgaben - TAX_2025.entlastungsbetrag;
+                break;
+            case 3:
+                // Splitting: Apply tariff to half, multiply by 2
+                zvE = bruttoJahr - TAX_2025.werbungskosten - TAX_2025.sonderausgaben;
+                zvE = Math.max(0, zvE);
+                return calcEinkommensteuer(zvE / 2) * 2;
+            case 5:
+                // Higher tax (married lower earner) - apply full tariff, no splitting benefit
+                zvE = bruttoJahr - TAX_2025.werbungskosten - TAX_2025.sonderausgaben;
+                break;
+            case 6:
+                // Second job: No Grundfreibetrag effectively (no deductions)
+                zvE = bruttoJahr;
+                break;
+            default:
+                zvE = bruttoJahr - TAX_2025.werbungskosten - TAX_2025.sonderausgaben;
+        }
+
+        zvE = Math.max(0, zvE);
+        return calcEinkommensteuer(zvE);
+    }
+
+    function calcSoli(einkommensteuer, steuerklasse) {
+        const freigrenze = (steuerklasse === 3)
+            ? TAX_2025.soliFreigrenzeSplitting
+            : TAX_2025.soliFreigrenze;
+
+        if (einkommensteuer <= freigrenze) return 0;
+
+        const fullSoli = einkommensteuer * TAX_2025.soliRate;
+        const milderung = (einkommensteuer - freigrenze) * TAX_2025.soliMilderung;
+
+        return Math.min(fullSoli, milderung);
+    }
+
+    function calcKirchensteuer(einkommensteuer, satz) {
+        return einkommensteuer * (satz / 100);
+    }
+
+    // =====================================================
+    // SOCIAL INSURANCE CALCULATION
+    // =====================================================
+    function calcSozialversicherung(bruttoMonat) {
+        const result = {};
+
+        // Rentenversicherung
+        const rvBasis = Math.min(bruttoMonat, SV_2025.rv_bbg_monat);
+        result.rentenversicherung = rvBasis * SV_2025.rv_rate;
+
+        // Krankenversicherung
+        const kvBasis = Math.min(bruttoMonat, SV_2025.kv_bbg_monat);
+        const zusatz = state.zusatzbeitrag / 100 / 2; // Employee share = half
+        result.krankenversicherung = kvBasis * (SV_2025.kv_rate + zusatz);
+
+        // Pflegeversicherung
+        const pvBasis = Math.min(bruttoMonat, SV_2025.pv_bbg_monat);
+        let pvRate = SV_2025.pv_base_rate;
+        if (state.kinderlos) {
+            pvRate += SV_2025.pv_kinderlos_zuschlag; // 2.4% total employee share
+        } else if (state.kinder >= 2) {
+            // Reduction for 2nd-5th child
+            const abschlagKinder = Math.min(state.kinder - 1, 4);
+            pvRate -= abschlagKinder * SV_2025.pv_kinder_abschlag;
+            pvRate = Math.max(pvRate, 0.008); // Floor at 0.8%
+        }
+        result.pflegeversicherung = pvBasis * pvRate;
+
+        // Arbeitslosenversicherung
+        const avBasis = Math.min(bruttoMonat, SV_2025.av_bbg_monat);
+        result.arbeitslosenversicherung = avBasis * SV_2025.av_rate;
+
+        result.gesamt = result.rentenversicherung + result.krankenversicherung
+            + result.pflegeversicherung + result.arbeitslosenversicherung;
+
+        return result;
+    }
+
+    // =====================================================
+    // MAIN CALCULATION
+    // =====================================================
+    function calculate() {
+        const bruttoInput = parseFloat(document.getElementById('bruttoInput').value) || 0;
+        const stundenProWoche = parseFloat(document.getElementById('stundenInput').value) || 40;
+        state.zusatzbeitrag = parseFloat(document.getElementById('zusatzbeitragInput').value) || 2.5;
+
+        // Update Stunden hint
+        const stundenProMonat = (stundenProWoche * 52 / 12).toFixed(1).replace('.', ',');
+        document.getElementById('stundenHint').textContent = `= ${stundenProMonat} Std/Mon.`;
+
+        const bruttoMonat = state.isMonthly ? bruttoInput : bruttoInput / 12;
+        const bruttoJahr = bruttoMonat * 12;
+        const stundenProJahr = stundenProWoche * 52;
+
+        // --- Social Insurance (monthly, then annualized) ---
+        const sv = calcSozialversicherung(bruttoMonat);
+        const svJahr = {
+            rentenversicherung: sv.rentenversicherung * 12,
+            krankenversicherung: sv.krankenversicherung * 12,
+            pflegeversicherung: sv.pflegeversicherung * 12,
+            arbeitslosenversicherung: sv.arbeitslosenversicherung * 12,
+            gesamt: sv.gesamt * 12
         };
-        
-        // Sozialabgaben 2026
-        const SOZIALABGABEN = {
-            rentenversicherung: 0.093,
-            krankenversicherung: 0.0875,
-            pflegeversicherung: 0.024,
-            arbeitslosenversicherung: 0.013
+
+        // --- Tax Calculation ---
+        // Lohnsteuer is calculated on (Brutto - SV employee contributions)
+        // For simplicity we use Brutto directly as zvE basis (before Vorsorgepauschale)
+        const lohnsteuerJahr = calcLohnsteuer(bruttoJahr, state.steuerklasse);
+        const soliJahr = calcSoli(lohnsteuerJahr, state.steuerklasse);
+        const kirchensteuerJahr = state.kirchensteuer
+            ? calcKirchensteuer(lohnsteuerJahr, state.kirchensteuerSatz) : 0;
+
+        const steuernJahr = lohnsteuerJahr + soliJahr + kirchensteuerJahr;
+        const abgabenJahr = steuernJahr + svJahr.gesamt;
+        const nettoJahr = bruttoJahr - abgabenJahr;
+
+        const nettoMonat = nettoJahr / 12;
+        const steuernMonat = steuernJahr / 12;
+        const svMonat = sv.gesamt;
+
+        // Per hour
+        const bruttoStunde = stundenProJahr > 0 ? bruttoJahr / stundenProJahr : 0;
+        const nettoStunde = stundenProJahr > 0 ? nettoJahr / stundenProJahr : 0;
+
+        // Store rates for live ticker
+        state.rates = {
+            nettoStunde,
+            bruttoStunde,
+            steuernStunde: stundenProJahr > 0 ? steuernJahr / stundenProJahr : 0,
+            sozialStunde: stundenProJahr > 0 ? svJahr.gesamt / stundenProJahr : 0
         };
-        
-        function setPeriod(period) {
-            isMonthly = period === 'month';
-            document.getElementById('btnMonth').classList.toggle('active', isMonthly);
-            document.getElementById('btnYear').classList.toggle('active', !isMonthly);
-            calculate();
+
+        // === UPDATE UI ===
+
+        // Hero
+        document.getElementById('nettoDisplay').textContent = formatCurrency(state.isMonthly ? nettoMonat : nettoJahr);
+        document.getElementById('heroUnit').textContent = state.isMonthly ? 'pro Monat' : 'pro Jahr';
+        document.getElementById('bruttoHero').textContent = formatCurrency(state.isMonthly ? bruttoMonat : bruttoJahr);
+        document.getElementById('steuernHero').textContent = '-' + formatCurrency(state.isMonthly ? steuernMonat : steuernJahr);
+        document.getElementById('sozialHero').textContent = '-' + formatCurrency(state.isMonthly ? svMonat : svJahr.gesamt);
+
+        // Stats grid (always netto)
+        document.getElementById('stundeDisplay').textContent = formatCurrency(nettoStunde);
+        document.getElementById('tagDisplay').textContent = formatCurrency(nettoStunde * 8);
+        document.getElementById('wocheDisplay').textContent = formatCurrency(nettoStunde * stundenProWoche);
+        document.getElementById('jahrDisplay').textContent = formatCurrency(nettoJahr);
+
+        // Ring chart
+        const netPct = bruttoJahr > 0 ? (nettoJahr / bruttoJahr * 100) : 0;
+        const taxPct = bruttoJahr > 0 ? (steuernJahr / bruttoJahr * 100) : 0;
+        const socPct = bruttoJahr > 0 ? (svJahr.gesamt / bruttoJahr * 100) : 0;
+        updateRing(netPct, taxPct, socPct);
+
+        // Detailed deductions (monthly)
+        updateDeductions(sv, lohnsteuerJahr / 12, soliJahr / 12, kirchensteuerJahr / 12, abgabenJahr / 12);
+    }
+
+    function updateRing(netPct, taxPct, socPct) {
+        const C = 113.1; // 2 * PI * 18
+
+        // Net portion
+        const netLen = C * netPct / 100;
+        document.getElementById('ringNet').style.strokeDashoffset = C - netLen;
+
+        // Tax portion (starts after net)
+        const taxLen = C * taxPct / 100;
+        const taxEl = document.getElementById('ringTax');
+        taxEl.style.strokeDasharray = `${taxLen} ${C - taxLen}`;
+        taxEl.style.strokeDashoffset = -netLen;
+
+        // Social portion (starts after net + tax)
+        const socLen = C * socPct / 100;
+        const socEl = document.getElementById('ringSocial');
+        socEl.style.strokeDasharray = `${socLen} ${C - socLen}`;
+        socEl.style.strokeDashoffset = -(netLen + taxLen);
+
+        // Labels
+        document.getElementById('ringPercent').textContent = netPct.toFixed(1) + '%';
+        document.getElementById('legendNet').textContent = netPct.toFixed(1) + '%';
+        document.getElementById('legendTax').textContent = taxPct.toFixed(1) + '%';
+        document.getElementById('legendSocial').textContent = socPct.toFixed(1) + '%';
+    }
+
+    function updateDeductions(sv, lohnsteuerMonat, soliMonat, kirchensteuerMonat, gesamtMonat) {
+        const items = [
+            { name: 'Lohnsteuer', amount: lohnsteuerMonat, color: 'var(--accent-danger)' },
+            { name: 'Solidarit\u00e4tszuschlag', amount: soliMonat, color: 'var(--accent-danger)' },
+        ];
+        if (state.kirchensteuer) {
+            items.push({ name: 'Kirchensteuer', amount: kirchensteuerMonat, color: 'var(--accent-purple)' });
         }
-        
-        function updateSteuerklasse() {
-            const value = document.getElementById('steuerklasseInput').value;
-            document.getElementById('steuerklasseValue').textContent = steuerklassen[value].name;
-        }
-        
-        function calculate() {
-            const bruttoInput = parseFloat(document.getElementById('bruttoInput').value) || 0;
-            const stundenProWoche = parseFloat(document.getElementById('stundenInput').value) || 40;
-            const steuerklasse = parseInt(document.getElementById('steuerklasseInput').value);
-            
-            const bruttoJahr = isMonthly ? bruttoInput * 12 : bruttoInput;
-            const bruttoMonat = bruttoJahr / 12;
-            
-            const stundenProJahr = stundenProWoche * 52;
-            
-            const sozialabgabenJahr = bruttoJahr * 0.218;
-            
-            const grundfreibetrag = 12348;
-            const steuerpflichtigesEinkommen = Math.max(0, bruttoJahr - grundfreibetrag);
-            const steuerSaetze = { 1: 0.14, 2: 0.12, 3: 0.10, 4: 0.14, 5: 0.18, 6: 0.22 };
-            const lohnsteuerJahr = steuerpflichtigesEinkommen * steuerSaetze[steuerklasse];
-            
-            const abgabenJahr = sozialabgabenJahr + lohnsteuerJahr;
-            const nettoJahr = bruttoJahr - abgabenJahr;
-            
-            const nettoMonat = nettoJahr / 12;
-            const lohnsteuerMonat = lohnsteuerJahr / 12;
-            const sozialabgabenMonat = sozialabgabenJahr / 12;
-            
-            const bruttoStunde = bruttoJahr / stundenProJahr;
-            const nettoStunde = nettoJahr / stundenProJahr;
-            const abgabenStunde = abgabenJahr / stundenProJahr;
-            
-            window.currentRates = {
-                nettoStunde,
-                bruttoStunde,
-                abgabenStunde,
-                lohnsteuerStunde: lohnsteuerJahr / stundenProJahr,
-                sozialStunde: sozialabgabenJahr / stundenProJahr
-            };
-            
-            document.getElementById('bruttoDisplay').textContent = formatCurrency(bruttoStunde);
-            document.getElementById('nettoDisplay').textContent = formatCurrency(nettoStunde);
-            document.getElementById('abgabenDisplay').textContent = formatCurrency(abgabenStunde);
-            
-            document.getElementById('tagDisplay').textContent = formatCurrency(nettoStunde * 8);
-            document.getElementById('wocheDisplay').textContent = formatCurrency(nettoStunde * stundenProWoche);
-            document.getElementById('monatDisplay').textContent = formatCurrency(nettoMonat);
-            document.getElementById('jahrDisplay').textContent = formatCurrency(nettoJahr);
-            
-            const steuerAnteil = ((lohnsteuerJahr / bruttoJahr) * 100).toFixed(1);
-            const sozialAnteil = ((sozialabgabenJahr / bruttoJahr) * 100).toFixed(1);
-            
-            document.getElementById('steuerProzent').textContent = steuerAnteil + '%';
-            document.getElementById('steuerBar').style.width = Math.min(steuerAnteil, 100) + '%';
-            
-            document.getElementById('sozialProzent').textContent = sozialAnteil + '%';
-            document.getElementById('sozialBar').style.width = Math.min(sozialAnteil, 100) + '%';
-        }
-        
-        function formatCurrency(value) {
-            return '€' + value.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-        }
-        
-        function updateLiveTicker() {
-            if (!isRunning || !window.currentRates) return;
-            
-            const { nettoStunde, lohnsteuerStunde, sozialStunde, bruttoStunde } = window.currentRates;
-            
-            const currentSession = (Date.now() - startTime) / 1000 / 60 / 60;
-            const totalHours = accumulatedTime + currentSession;
-            
-            const liveNetto = nettoStunde * totalHours;
-            const liveSteuern = lohnsteuerStunde * totalHours;
-            const liveSozial = sozialStunde * totalHours;
-            const liveBrutto = bruttoStunde * totalHours;
-            
-            document.getElementById('liveVerdienst').textContent = formatCurrency(liveBrutto);
-            document.getElementById('liveNetto').textContent = formatCurrency(liveNetto);
-            document.getElementById('liveSteuern').textContent = '-' + formatCurrency(liveSteuern);
-            document.getElementById('liveSozial').textContent = '-' + formatCurrency(liveSozial);
-        }
-        
-        function startCalculation() {
-            if (isRunning) {
-                isRunning = false;
-                accumulatedTime += (Date.now() - startTime) / 1000 / 60 / 60;
-                document.getElementById('startBtnText').textContent = 'Start';
-                clearInterval(timerInterval);
-            } else {
-                isRunning = true;
-                startTime = Date.now();
-                document.getElementById('startBtnText').textContent = 'Pause';
-                timerInterval = setInterval(updateLiveTicker, 100);
+        items.push(
+            { name: 'Rentenversicherung', amount: sv.rentenversicherung, color: 'var(--accent-warning)' },
+            { name: 'Krankenversicherung', amount: sv.krankenversicherung, color: 'var(--accent-warning)' },
+            { name: 'Pflegeversicherung', amount: sv.pflegeversicherung, color: 'var(--accent-warning)' },
+            { name: 'Arbeitslosenvers.', amount: sv.arbeitslosenversicherung, color: 'var(--accent-warning)' }
+        );
+
+        const bruttoMonat = parseFloat(document.getElementById('bruttoInput').value) || 0;
+        const brutto = state.isMonthly ? bruttoMonat : bruttoMonat / 12;
+
+        const html = items.map(item => {
+            const pct = brutto > 0 ? (item.amount / brutto * 100).toFixed(1) : '0.0';
+            return `
+                <div class="deduction-row">
+                    <div class="deduction-left">
+                        <div class="deduction-dot" style="background:${item.color}"></div>
+                        <div class="deduction-name">${item.name}</div>
+                    </div>
+                    <div class="deduction-right">
+                        <div class="deduction-amount">-${formatCurrency(item.amount)}</div>
+                        <div class="deduction-percent">${pct}%</div>
+                    </div>
+                </div>`;
+        }).join('');
+
+        document.getElementById('deductionsList').innerHTML = html;
+        document.getElementById('totalAbzuege').textContent = '-' + formatCurrency(gesamtMonat);
+    }
+
+    // =====================================================
+    // UI HELPERS
+    // =====================================================
+    function formatCurrency(value) {
+        if (!isFinite(value)) return '\u20AC0,00';
+        const abs = Math.abs(value);
+        const formatted = abs.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        return '\u20AC' + formatted;
+    }
+
+    function setPeriod(period) {
+        state.isMonthly = period === 'month';
+        document.getElementById('btnMonth').classList.toggle('active', state.isMonthly);
+        document.getElementById('btnYear').classList.toggle('active', !state.isMonthly);
+        document.getElementById('inputHint').textContent = state.isMonthly ? 'monatlich' : 'j\u00e4hrlich';
+        calculate();
+    }
+
+    function setSteuerklasse(sk) {
+        state.steuerklasse = sk;
+        document.querySelectorAll('.sk-btn').forEach(btn => {
+            btn.classList.toggle('active', parseInt(btn.dataset.sk) === sk);
+        });
+        document.getElementById('skDesc').textContent = SK_DESC[sk];
+        calculate();
+    }
+
+    function toggleOption(option) {
+        if (option === 'kirchensteuer') {
+            state.kirchensteuer = !state.kirchensteuer;
+            document.getElementById('toggleKirchensteuer').classList.toggle('on', state.kirchensteuer);
+        } else if (option === 'kinderlos') {
+            state.kinderlos = !state.kinderlos;
+            document.getElementById('toggleKinderlos').classList.toggle('on', state.kinderlos);
+            document.getElementById('kinderGroup').style.display = state.kinderlos ? 'none' : 'block';
+            if (!state.kinderlos && state.kinder === 0) {
+                state.kinder = 1;
             }
         }
-        
-        function resetCalculation() {
-            isRunning = false;
-            accumulatedTime = 0;
-            startTime = null;
-            clearInterval(timerInterval);
-            
-            document.getElementById('startBtnText').textContent = 'Start';
-            document.getElementById('liveVerdienst').textContent = '€0,00';
-            document.getElementById('liveNetto').textContent = '€0,00';
-            document.getElementById('liveSteuern').textContent = '-€0,00';
-            document.getElementById('liveSozial').textContent = '-€0,00';
-        }
-        
-        // Initial
         calculate();
+    }
+
+    function setKinder(n) {
+        state.kinder = n;
+        document.querySelectorAll('.kinder-btn').forEach(btn => {
+            btn.classList.toggle('active', parseInt(btn.dataset.k) === n);
+        });
+        calculate();
+    }
+
+    // =====================================================
+    // LIVE TICKER
+    // =====================================================
+    function updateLiveTicker() {
+        if (!state.isRunning || !state.rates) return;
+
+        const { nettoStunde, steuernStunde, sozialStunde, bruttoStunde } = state.rates;
+        const currentSession = (Date.now() - state.startTime) / 1000 / 3600;
+        const totalHours = state.accumulatedTime + currentSession;
+
+        const liveBrutto = bruttoStunde * totalHours;
+        const liveNetto = nettoStunde * totalHours;
+        const liveSteuern = steuernStunde * totalHours;
+        const liveSozial = sozialStunde * totalHours;
+
+        document.getElementById('liveVerdienst').textContent = formatCurrency(liveBrutto);
+        document.getElementById('liveNetto').textContent = formatCurrency(liveNetto);
+        document.getElementById('liveSteuern').textContent = '-' + formatCurrency(liveSteuern);
+        document.getElementById('liveSozial').textContent = '-' + formatCurrency(liveSozial);
+
+        // Timer display
+        const totalSeconds = Math.floor(totalHours * 3600);
+        const h = Math.floor(totalSeconds / 3600);
+        const m = Math.floor((totalSeconds % 3600) / 60);
+        const s = totalSeconds % 60;
+        document.getElementById('liveTimer').textContent =
+            String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+    }
+
+    function startCalculation() {
+        if (state.isRunning) {
+            // Pause
+            state.isRunning = false;
+            state.accumulatedTime += (Date.now() - state.startTime) / 1000 / 3600;
+            document.getElementById('startBtnText').textContent = 'Start';
+            document.getElementById('startBtnIcon').textContent = '\u25B6';
+            document.getElementById('liveDot').classList.remove('active');
+            clearInterval(state.timerInterval);
+        } else {
+            // Start
+            state.isRunning = true;
+            state.startTime = Date.now();
+            document.getElementById('startBtnText').textContent = 'Pause';
+            document.getElementById('startBtnIcon').textContent = '\u23F8';
+            document.getElementById('liveDot').classList.add('active');
+            state.timerInterval = setInterval(updateLiveTicker, 100);
+        }
+    }
+
+    function resetCalculation() {
+        state.isRunning = false;
+        state.accumulatedTime = 0;
+        state.startTime = null;
+        clearInterval(state.timerInterval);
+
+        document.getElementById('startBtnText').textContent = 'Start';
+        document.getElementById('startBtnIcon').textContent = '\u25B6';
+        document.getElementById('liveDot').classList.remove('active');
+        document.getElementById('liveVerdienst').textContent = '\u20AC0,00';
+        document.getElementById('liveNetto').textContent = '\u20AC0,00';
+        document.getElementById('liveSteuern').textContent = '\u20AC0,00';
+        document.getElementById('liveSozial').textContent = '\u20AC0,00';
+        document.getElementById('liveTimer').textContent = '00:00:00';
+    }
+
+    // =====================================================
+    // INIT
+    // =====================================================
+    calculate();
+
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
     </script>
 </body>
 </html>

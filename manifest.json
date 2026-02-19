@@ -1,19 +1,28 @@
 {
-  "name": "Gehaltsrechner - Live Verdienst-Tracker",
-  "short_name": "Gehaltsrechner",
-  "description": "Berechne deinen Live-Verdienst und sieh, wie viel an den Staat geht",
-  "start_url": "/",
+  "name": "SALARY PRO - Brutto-Netto-Rechner 2025",
+  "short_name": "Salary Pro",
+  "description": "Pr\u00e4ziser Brutto-Netto-Rechner mit echten deutschen Steuerformeln (\u00a732a EStG 2025). Live-Verdienst-Tracker.",
+  "start_url": "/gehaltsrechner/",
+  "scope": "/gehaltsrechner/",
   "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#667eea",
+  "background_color": "#06060b",
+  "theme_color": "#06060b",
   "orientation": "portrait",
-  "scope": "/",
+  "categories": ["finance", "utilities"],
+  "lang": "de",
+  "dir": "ltr",
   "icons": [
     {
       "src": "icons/icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
     }
   ]
 }
