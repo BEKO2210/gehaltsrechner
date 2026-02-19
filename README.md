@@ -126,24 +126,30 @@ gehaltsrechner/
 
 ### Farbpalette
 ```css
---primary: #667eea;      /* Hauptfarbe (Lila-Blau) */
---primary-dark: #5a67d8; /* Dunkles Lila */
---secondary: #f093fb;    /* Akzent (Pink) */
---success: #48bb78;      /* Erfolg (Grün) */
---danger: #f56565;       /* Gefahr/Abgaben (Rot) */
---warning: #ed8936;      /* Warnung (Orange) */
---bg: #0f172a;          /* Hintergrund (Dunkelblau) */
---card: #1e293b;        /* Karten-Hintergrund */
---text: #f8fafc;        /* Text (Hell) */
---text-muted: #94a3b8;  /* Gedämpfter Text */
---border: #334155;      /* Rahmen */
-```
+--bg-primary: #06060b;           /* Hintergrund (Tiefschwarz) */
+--bg-secondary: #0d0d14;        /* Sekundärer Hintergrund */
+--bg-tertiary: #14141f;         /* Tertiärer Hintergrund */
+--bg-card: rgba(20, 20, 31, 0.7); /* Karten-Hintergrund (Glass) */
+--bg-input: #0f0f1a;            /* Input-Felder */
 
-### Typografie
-- **Font:** Inter (Google Fonts)
-- **Überschriften:** 600-700 weight
-- **Body:** 400 weight
-- **Zahlen:** Tabular nums (monospace)
+--accent-gold: #f0c000;         /* Hauptakzent (Gold) */
+--accent-gold-light: #ffd740;   /* Helles Gold */
+--accent-cyan: #00d4ff;         /* Sekundärakzent (Cyan) */
+--accent-success: #00e88f;      /* Erfolg/Netto (Grün) */
+--accent-danger: #ff4060;       /* Steuern/Abzüge (Rot) */
+--accent-warning: #ff9f1a;      /* Sozialabgaben (Orange) */
+--accent-purple: #a78bfa;       /* Kirchensteuer (Lila) */
+
+--text-primary: #f0f0f5;        /* Haupttext (Hell) */
+--text-secondary: rgba(240, 240, 245, 0.65); /* Sekundärtext */
+--text-tertiary: rgba(240, 240, 245, 0.4);   /* Tertiärtext */
+--text-muted: rgba(240, 240, 245, 0.25);     /* Gedämpfter Text */
+
+Typografie
+UI-Font: Inter (Google Fonts) — 300–900 weight
+Zahlen-Font: JetBrains Mono (monospace) — 400–700 weight
+Labels: 600 weight, uppercase, letter-spacing 0.5–2px
+Beträge: JetBrains Mono, 700 weight, tabular nums
 
 ---
 
